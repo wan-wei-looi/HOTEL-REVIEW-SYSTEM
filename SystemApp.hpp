@@ -16,12 +16,13 @@ public:
     SystemApp();
     ~SystemApp();
 
+    //method
+    void addReview(Traveler[]);
     void hotelSummary();
     void travelerManagement();
     void highestRatedHotel();
     void topReviewers();
 
-    Traveler operator+(int);
     bool operator>(const Review&);
 };
 

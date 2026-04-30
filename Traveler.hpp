@@ -26,6 +26,8 @@ public:
     
     //friend function
     friend void printTravelerInfo(Traveler);
+
+    friend bool readWriteUserFile(Traveler[], bool);
 };
 
 #endif TRAVELER_H

@@ -15,7 +15,9 @@ const int REVIEW_NUM = 50;
 
 //  Enumurators:
 enum travelerUpdateOpt {USER_NAME, STATE, EMAIL, MEMBER_TYPE, POINT, EXIT};
+enum readWrite {READ, WRITE};
 
+//  setters (line 21 - 45) mainly used for traveler info managemen
 //  class method definition - Person class
 void Person::setUserID(string userID){
     this->userID = userID;
@@ -42,6 +44,7 @@ void Traveler::setPoint(int point){
     this->point = point;
 }
 
+//  setter (line 49 - 54) used for adding review
 //  class method definition - Review class
 void Review::setReview(string userID, int rating, string review, string hotelName){
     this->userID = userID;
@@ -50,11 +53,33 @@ void Review::setReview(string userID, int rating, string review, string hotelNam
     this->hotelName = hotelName;
 }
 
-void Review::addReview(){
-    
+//  class method definition - SystemApp class
+void SystemApp::addReview(Traveler tra[]){
+    bool repeat = true;
+    string userID;
+    int rating;
+    string review;
+    string hotelName;
+
+    cout << endl
+         << "REVIEW SUBMISSION:" << endl
+         << "======================================================" << endl
+         << "Enter the necessary information as prompted." << endl;
+    do{
+        cout << endl
+             << "------------------------------------------------------" << endl
+             << " Insert User ID [User ID must be registered]" << endl
+             << "------------------------------------------------------" << endl;
+
+        getline(cin, userID);
+        for(int userIndex = 0; userIndex < TRAVELER_NUM; userIndex++){
+            if(userID == tra[userIndex].getUserID()){
+                repeat = false;
+            }
+        }
+    }while(repeat);
 }
 
-//  class method definition - SystemApp class
 void SystemApp::hotelSummary(){
     string hotelName = "";
     int revNo = 0;
@@ -70,7 +95,7 @@ void SystemApp::hotelSummary(){
             cout << endl
                  << "=============================================================================================================" << endl
                  << setw(8) << left << "User ID" << setw(8) << left << "Rating" << setw(30) << left << "Hotel" << "Review" << endl
-                 << "=============================================================================================================" << endl;
+                 << "=============================================================================================================";
         }
         if(review[reviewIndex].getHotelName() == hotelName){
             printReview(review[reviewIndex]);
@@ -186,6 +211,7 @@ void SystemApp::travelerManagement(){
     }
 }
 
+//unfinished definition -start
 void SystemApp::highestRatedHotel(){
     
 }
@@ -195,22 +221,158 @@ void SystemApp::topReviewers(){
 }
 
 //  operator overloading
-Traveler SystemApp::operator+(int newPoint){}
+bool SystemApp::operator>(const Review& rev){}
+//unfinished definition -end
 
 //  friend global functions declaration
 void printTravelerInfo(Traveler);
 
 void printReview(Review);
 
+bool readWriteUserFile(Traveler[], bool);
+
+bool readWriteReviewFile(Review[], int, bool);
+
+
 int main(){
     SystemApp app;
     return 0;
 }
 
+
+//  friend global function definition
 void printTravelerInfo(Traveler tra){
 
 }
 
 void printReview(Review rev){
 
+}
+
+bool readWriteUserFile(Traveler tra[], bool rW){
+    static int userCount;
+    
+    //rW = 0(READ) means perform file reading
+    if(rW == 0){
+        userCount = 0;
+        cout << endl
+             << "============= Collecting data from user.txt =============" << endl
+             << endl;
+
+        ifstream userInFile("users.txt");
+
+        if(!userInFile){
+            cout << endl
+                 << "File open error..." << endl
+                 << "Press \"ENTER\" to exit program..."
+                 << endl;
+        
+            getchar();
+            return false;
+        }
+
+        while(getline(userInFile, tra[userCount].userID, '\t')){
+            
+            getline(userInFile, tra[userCount].userName, '\t');
+            getline(userInFile, tra[userCount].state, '\t');
+            getline(userInFile, tra[userCount].email, '\t');
+            getline(userInFile, tra[userCount].memberType, '\t');
+            userInFile >> tra[userCount].point;
+            
+            userCount++;
+
+            while(userInFile.peek() == '\n'){
+                userInFile.ignore();
+            }
+        }
+
+        userInFile.close();
+        cout << "<--------------user.txt successfully read--------------->" << endl;
+        return true;
+    }
+
+    //rW = 1(WRITE) means perform file writing
+    if(rW == 1){
+        cout << endl
+             << "============= Rewriting data into user.txt ==============" << endl
+             << endl;
+
+        ofstream userOutFile("users.txt");
+
+        for(int userNumber = 0; userNumber < userCount; userNumber++){
+            userOutFile << tra[userNumber].userID << '\t'
+                        << tra[userNumber].userName << '\t'
+                        << tra[userNumber].state << '\t'
+                        << tra[userNumber].email << '\t'
+                        << tra[userNumber].memberType << '\t'
+                        << tra[userNumber].point << '\n';
+        }
+
+        userOutFile.close();
+        cout << "<------------ user.txt successfully updated ------------>" << endl;
+        return true;
+    }
+}
+
+bool readWriteReviewFile(Review rev[],  int additionalRevs, bool rW){
+    static int revCount;
+    
+    //rW = 0(READ) means perform file reading
+    if(rW == 0){
+        revCount = 0;
+        cout << endl
+             << "============= Collecting data from user.txt =============" << endl
+             << endl;
+
+        ifstream revInFile("users.txt");
+
+        if(!revInFile){
+            cout << endl
+                 << "File open error..." << endl
+                 << "Press \"ENTER\" to exit program..."
+                 << endl;
+        
+            getchar();
+            return false;
+        }
+
+        while(getline(revInFile, rev[revCount].userID, '\t')){
+            
+            revInFile >> rev[revCount].rating;
+            revInFile.ignore();
+
+            getline(revInFile, rev[revCount].review, '\t');
+            getline(revInFile, rev[revCount].hotelName, '\t');
+            
+            revCount++;
+
+            while(revInFile.peek() == '\n'){
+                revInFile.ignore();
+            }
+        }
+
+        revInFile.close();
+        cout << "<-------------review.txt successfully read-------------->" << endl;
+        return true;
+    }
+
+    //rW = 1(WRITE) means perform file writing
+    if(rW == 1){
+        cout << endl
+             << "============= Rewriting data into user.txt ==============" << endl
+             << endl;
+
+        ofstream revOutFile("users.txt");
+
+        for(int revNumber = 0; revNumber < (revCount + additionalRevs); revNumber++){
+            revOutFile << rev[revNumber].userID << '\t'
+                        << rev[revNumber].rating << '\t'
+                        << rev[revNumber].review << '\t'
+                        << rev[revNumber].hotelName << '\n';
+        }
+
+        revOutFile.close();
+        cout << "<----------- review.txt successfully updated ----------->" << endl;
+        return true;
+    }
 }
