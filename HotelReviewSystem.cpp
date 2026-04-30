@@ -50,6 +50,10 @@ void Review::setReview(string userID, int rating, string review, string hotelNam
     this->hotelName = hotelName;
 }
 
+void Review::addReview(){
+    
+}
+
 //  class method definition - SystemApp class
 void SystemApp::hotelSummary(){
     string hotelName = "";

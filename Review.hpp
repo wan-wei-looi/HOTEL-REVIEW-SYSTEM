@@ -28,6 +28,9 @@ public:
     string getReview(){return review;}
     string getHotelName(){return hotelName;}
 
+    //method
+    void addReview();
+
     //friend function
     friend void printReview(Review);
 };
