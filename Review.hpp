@@ -29,6 +29,9 @@ public:
     string getReview()const{return review;}
     string getHotelName()const{return hotelName;}
 
+    //class method - print function
+    void printReview()const;
+
     //friend function
     friend void writeReviewFile(Review[], int&);
 };

@@ -22,14 +22,19 @@ public:
     SystemApp(int&);    // file reading
     ~SystemApp(){};   // file writing
 
+    //class method - getter
+    Traveler* getTraveler(){return traveler;}
+    Review* getReview(){return review;}
+
     //method
     void addReview(Traveler[], int&);
     void hotelReview();
     void travelerManagement();
-    void highestRatedHotel(const int&);
+    void highestRatedHotel(const int&, int&);
     void topReviewers();
 
-    bool operator==(const Review&)const;
+    //friend function
+    friend void writeUserFile(Traveler[]);
 };
 
 #endif SYSTEMAPP_H

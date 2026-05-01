@@ -22,9 +22,12 @@ public:
     //class method - getter
     double getAverageRating()const{return averageRating;}
 
+    //class method - print function
+    void printUniqueHotel()const;
+
     //operator overloading
     UniqueHotel& operator=(const Review&);
-    bool operator>(const UniqueHotel&);
+    bool operator>(const UniqueHotel&)const;
 };
 
 #endif UNIQUE_HOTEL_H

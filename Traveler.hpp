@@ -23,6 +23,9 @@ public:
     //class methods - getters
     string getMemberType()const{return memberType;}
     int getPoint()const{return point;}
+
+    //class method - print function
+    void printTraveler()const;
     
     //friend function
     friend void writeUserFile(Traveler[]);

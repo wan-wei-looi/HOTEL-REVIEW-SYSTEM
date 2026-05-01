@@ -32,7 +32,7 @@ void Person::setEmail(string email){
     this->email = email;
 }
 
-//class method definition - Traveler class
+//  class method definition - Traveler class
 void Traveler::setMemberType(string memberType){
     this->memberType = memberType;
 }
@@ -41,7 +41,6 @@ void Traveler::setPoint(int point){
     this->point = point;
 }
 
-//  setter (line 45 - 50) used for adding review
 //  class method definition - Review class
 void Review::setReview(string userID, int rating, string review, string hotelName){
     this->userID = userID;
@@ -64,6 +63,10 @@ UniqueHotel& UniqueHotel::operator=(const Review& rev){
         rev.getHotelName()
     );
     return *this;
+}
+
+bool UniqueHotel::operator>(const UniqueHotel& otherHotel)const{
+    return ((this->getAverageRating()) > otherHotel.getAverageRating());
 }
 
 //  class method definition - SystemApp class
@@ -178,7 +181,7 @@ void SystemApp::travelerManagement(){
     travelerUpdateOpt options;
     int temp;
     int travelerIndex = 0;
-    bool updateInfo = true;
+    bool updateInfo = false;
 
     cout << endl
          << "Enter user ID to configure the corresponding user information: "
@@ -189,9 +192,16 @@ void SystemApp::travelerManagement(){
     //searching for the user based on uid
     for(travelerIndex; travelerIndex < TRAVELER_NUM; travelerIndex++){
         if(traveler[travelerIndex].getUserID() == uid){
+            updateInfo = true;
             break;
         }
     }
+    if(!updateInfo){
+        cout << endl
+             << "UserID not found..."
+             << endl;
+    }
+
     while(updateInfo){
         cout << endl
              << "============================0============================" << endl
@@ -268,11 +278,8 @@ void SystemApp::travelerManagement(){
     }
 }
 
-//unfinished definition -start
-void SystemApp::highestRatedHotel(const int& revNo){
-    //UniqueHotel temp;
-    int uniqueHotelNum = 0;
-    
+void SystemApp::highestRatedHotel(const int& revNo, int& uniqueHotelNum){
+
     //  making a list of unique hotel
     for(int i = 0; i < revNo; i++){
         bool sameHotel = false;
@@ -283,6 +290,7 @@ void SystemApp::highestRatedHotel(const int& revNo){
             }
             if(!sameHotel){
                 uniqueHotel[uniqueHotelNum] = review[i];
+                uniqueHotelNum++;
             }
         }
     }
@@ -297,20 +305,25 @@ void SystemApp::highestRatedHotel(const int& revNo){
                 numHotel++;
             }
         }
+        uniqueHotel[i].setAverageRating(rateSum/numHotel);
+    }
 
-
+    //  sort uniqueHotel ONLY based on average rating
+    UniqueHotel temp;
+    for(int i = 0; i < uniqueHotelNum; i++){
+        for(int j = i + 1; j < uniqueHotelNum; j++){
+            if(uniqueHotel[i] > uniqueHotel[j]){
+                temp = uniqueHotel[i];
+                uniqueHotel[i] = uniqueHotel[j];
+                uniqueHotel[j] = temp;
+            }
+        }
     }
 }
 
 void SystemApp::topReviewers(){
     
 }
-
-//  operator overloading
-bool SystemApp::operator==(const Review& rev)const{
-
-}
-//unfinished definition -end
 
 //  constructors - SystemApp class
 SystemApp::SystemApp(int& revNo){
@@ -320,7 +333,7 @@ SystemApp::SystemApp(int& revNo){
             << endl;
 
     ifstream userInFile("users.txt");
-    ifstream revInFile("review.txt");
+    ifstream revInFile("reviews.txt");
 
     if(!userInFile || !revInFile){
         cout << endl
@@ -349,13 +362,14 @@ SystemApp::SystemApp(int& revNo){
             traveler[userCount].setMemberType(input);
             
             userInFile >> numInput;
+            while(userInFile.peek() == '\n'){
+                userInFile.ignore();
+            }
+
             traveler[userCount].setPoint(numInput);
 
             userCount++;
     
-            while(userInFile.peek() == '\n'){
-                userInFile.ignore();
-            }
         }
 
         string uid, rev, hotel;
@@ -367,7 +381,7 @@ SystemApp::SystemApp(int& revNo){
 
             getline(revInFile, rev, '\t');
             
-            getline(revInFile, hotel, '\t');
+            getline(revInFile, hotel, '\n');
 
             review[revNo].setReview(uid, rate, rev,hotel);
             
@@ -394,8 +408,11 @@ void writeReviewFile(Review[], int&);
 
 int main(){
     int reviewNumber = 0;
+    int uniqueHotelNum = 0;
     SystemApp app(reviewNumber);
 
+    writeUserFile(app.getTraveler());
+    writeReviewFile(app.getReview(), reviewNumber);
     return 0;
 }
 
@@ -429,7 +446,7 @@ void writeReviewFile(Review rev[],  int& revNo){
          << "..." << endl
          << endl;
 
-    ofstream revOutFile("users.txt");
+    ofstream revOutFile("reviews.txt");
 
     for(int revNumber = 0; revNumber < revNo; revNumber++){
         revOutFile << rev[revNumber].userID << '\t'
