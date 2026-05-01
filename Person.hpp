@@ -26,10 +26,10 @@ public:
     void setEmail(string);
 
     //class methods - getters
-    string getUserID(){return userID;}
-    string getUserName(){return userName;}
-    string getState(){return state;}
-    string getEmail(){return email;}
+    string getUserID()const{return userID;}
+    string getUserName()const{return userName;}
+    string getState()const{return state;}
+    string getEmail()const{return email;}
 };
 
 #endif

@@ -6,18 +6,15 @@
 #include "Person.hpp"
 #include "Traveler.hpp"
 #include "Review.hpp"
+#include "UniqueHotel.hpp"
 #include "SystemApp.hpp"
 
 using namespace std;
-//  Global constant:
-const int TRAVELER_NUM = 10;
-const int REVIEW_NUM = 50;
 
 //  Enumurators:
 enum travelerUpdateOpt {USER_NAME, STATE, EMAIL, MEMBER_TYPE, POINT, EXIT};
-enum readWrite {READ, WRITE};
 
-//  setters (line 21 - 45) mainly used for traveler info managemen
+//  setters (line 18 - 41) mainly used for traveler info managemen
 //  class method definition - Person class
 void Person::setUserID(string userID){
     this->userID = userID;
@@ -44,7 +41,7 @@ void Traveler::setPoint(int point){
     this->point = point;
 }
 
-//  setter (line 49 - 54) used for adding review
+//  setter (line 45 - 50) used for adding review
 //  class method definition - Review class
 void Review::setReview(string userID, int rating, string review, string hotelName){
     this->userID = userID;
@@ -53,8 +50,24 @@ void Review::setReview(string userID, int rating, string review, string hotelNam
     this->hotelName = hotelName;
 }
 
+//  class method definition - UniqueHotel Class
+void UniqueHotel::setAverageRating(double ave){
+    averageRating = ave;
+}
+
+//  operator overloading - UniqueHotel class
+UniqueHotel& UniqueHotel::operator=(const Review& rev){
+    this->setReview(
+        rev.getUserID(),
+        rev.getRating(),
+        rev.getReview(),
+        rev.getHotelName()
+    );
+    return *this;
+}
+
 //  class method definition - SystemApp class
-void SystemApp::addReview(Traveler tra[]){
+void SystemApp::addReview(Traveler tra[], int& revNo){
     bool repeat = true;
     string userID;
     int rating;
@@ -72,15 +85,59 @@ void SystemApp::addReview(Traveler tra[]){
              << "------------------------------------------------------" << endl;
 
         getline(cin, userID);
+
         for(int userIndex = 0; userIndex < TRAVELER_NUM; userIndex++){
             if(userID == tra[userIndex].getUserID()){
                 repeat = false;
             }
         }
+        if(repeat){
+            cout << endl
+                 << "Please try again, " << userID << " is not a valid user ID..." << endl
+                 << endl;
+        }
     }while(repeat);
+
+    cout << endl
+         << "------------------------------------------------------" << endl
+         << " Insert hotel name" << endl
+         << " ! System is case sensitive" <<endl 
+         << " ! Different capitalisation refers to different hotel" << endl
+         << "------------------------------------------------------" << endl;
+
+    getline(cin, hotelName);
+    
+    do{
+        cout << endl
+             << "------------------------------------------------------" << endl
+             << " Insert Rating (1 to 5)" << endl
+             << "------------------------------------------------------" << endl;
+    
+        cin >> rating;
+        cin.ignore();
+
+        if(rating < 1 || rating > 5){
+            cout << endl
+                 << "Please try again, rating must be between 1 and 5 (inclusive)" << endl
+                 << endl;
+        }
+    }while(rating < 1 || rating > 5);
+
+    cout << endl
+         << "------------------------------------------------------" << endl
+         << " Insert your review for" << hotelName << endl
+         << "------------------------------------------------------" << endl;
+
+    getline(cin, review);
+
+    this->review[revNo].setReview(userID, rating, review, hotelName);
+    revNo++;
+
+    cout << "<----------- New review successfully updated ----------->" << endl
+         << endl;
 }
 
-void SystemApp::hotelSummary(){
+void SystemApp::hotelReview(){
     string hotelName = "";
     int revNo = 0;
     
@@ -98,7 +155,7 @@ void SystemApp::hotelSummary(){
                  << "=============================================================================================================";
         }
         if(review[reviewIndex].getHotelName() == hotelName){
-            printReview(review[reviewIndex]);
+            //print(placeholder)
             revNo++;
         }
     }
@@ -212,8 +269,37 @@ void SystemApp::travelerManagement(){
 }
 
 //unfinished definition -start
-void SystemApp::highestRatedHotel(){
+void SystemApp::highestRatedHotel(const int& revNo){
+    //UniqueHotel temp;
+    int uniqueHotelNum = 0;
     
+    //  making a list of unique hotel
+    for(int i = 0; i < revNo; i++){
+        bool sameHotel = false;
+        for(int j = 0; j < uniqueHotelNum; j++){
+            if(uniqueHotel[j].getHotelName() == review[i].getHotelName()){
+                sameHotel = true;
+                break;
+            }
+            if(!sameHotel){
+                uniqueHotel[uniqueHotelNum] = review[i];
+            }
+        }
+    }
+
+    //  assigning averageRating for respective unique hotels
+    for(int i = 0; i < uniqueHotelNum; i++){
+        double rateSum = 0;
+        int numHotel = 0;
+        for(int j = 0; i < revNo; j++){
+            if(uniqueHotel[i].getHotelName() == review[i].getHotelName()){
+                rateSum += review[i].getRating();
+                numHotel++;
+            }
+        }
+
+
+    }
 }
 
 void SystemApp::topReviewers(){
@@ -221,158 +307,138 @@ void SystemApp::topReviewers(){
 }
 
 //  operator overloading
-bool SystemApp::operator>(const Review& rev){}
+bool SystemApp::operator==(const Review& rev)const{
+
+}
 //unfinished definition -end
 
-//  friend global functions declaration
-void printTravelerInfo(Traveler);
+//  constructors - SystemApp class
+SystemApp::SystemApp(int& revNo){
+    int userCount = 0;
+    cout << endl
+            << "============ Collecting data from text files ============" << endl
+            << endl;
 
-void printReview(Review);
+    ifstream userInFile("users.txt");
+    ifstream revInFile("review.txt");
 
-bool readWriteUserFile(Traveler[], bool);
-
-bool readWriteReviewFile(Review[], int, bool);
-
-
-int main(){
-    SystemApp app;
-    return 0;
-}
-
-
-//  friend global function definition
-void printTravelerInfo(Traveler tra){
-
-}
-
-void printReview(Review rev){
-
-}
-
-bool readWriteUserFile(Traveler tra[], bool rW){
-    static int userCount;
-    
-    //rW = 0(READ) means perform file reading
-    if(rW == 0){
-        userCount = 0;
+    if(!userInFile || !revInFile){
         cout << endl
-             << "============= Collecting data from user.txt =============" << endl
-             << endl;
+                << "File open error..." << endl
+                << "Press \"ENTER\" to exit program..."
+                << endl;
+        getchar();
+    }else{
 
-        ifstream userInFile("users.txt");
+        string input;
+        int numInput;
 
-        if(!userInFile){
-            cout << endl
-                 << "File open error..." << endl
-                 << "Press \"ENTER\" to exit program..."
-                 << endl;
-        
-            getchar();
-            return false;
-        }
+        while(getline(userInFile, input, '\t')){
+            traveler[userCount].setUserID(input);
 
-        while(getline(userInFile, tra[userCount].userID, '\t')){
+            getline(userInFile, input, '\t');
+            traveler[userCount].setUserName(input);
+
+            getline(userInFile, input, '\t');
+            traveler[userCount].setState(input);
             
-            getline(userInFile, tra[userCount].userName, '\t');
-            getline(userInFile, tra[userCount].state, '\t');
-            getline(userInFile, tra[userCount].email, '\t');
-            getline(userInFile, tra[userCount].memberType, '\t');
-            userInFile >> tra[userCount].point;
+            getline(userInFile, input, '\t');
+            traveler[userCount].setEmail(input);
+
+            getline(userInFile, input, '\t');
+            traveler[userCount].setMemberType(input);
             
+            userInFile >> numInput;
+            traveler[userCount].setPoint(numInput);
+
             userCount++;
-
+    
             while(userInFile.peek() == '\n'){
                 userInFile.ignore();
             }
         }
 
-        userInFile.close();
-        cout << "<--------------user.txt successfully read--------------->" << endl;
-        return true;
-    }
+        string uid, rev, hotel;
+        int rate;
+        while(getline(revInFile, uid, '\t')){
 
-    //rW = 1(WRITE) means perform file writing
-    if(rW == 1){
-        cout << endl
-             << "============= Rewriting data into user.txt ==============" << endl
-             << endl;
-
-        ofstream userOutFile("users.txt");
-
-        for(int userNumber = 0; userNumber < userCount; userNumber++){
-            userOutFile << tra[userNumber].userID << '\t'
-                        << tra[userNumber].userName << '\t'
-                        << tra[userNumber].state << '\t'
-                        << tra[userNumber].email << '\t'
-                        << tra[userNumber].memberType << '\t'
-                        << tra[userNumber].point << '\n';
-        }
-
-        userOutFile.close();
-        cout << "<------------ user.txt successfully updated ------------>" << endl;
-        return true;
-    }
-}
-
-bool readWriteReviewFile(Review rev[],  int additionalRevs, bool rW){
-    static int revCount;
-    
-    //rW = 0(READ) means perform file reading
-    if(rW == 0){
-        revCount = 0;
-        cout << endl
-             << "============= Collecting data from user.txt =============" << endl
-             << endl;
-
-        ifstream revInFile("users.txt");
-
-        if(!revInFile){
-            cout << endl
-                 << "File open error..." << endl
-                 << "Press \"ENTER\" to exit program..."
-                 << endl;
-        
-            getchar();
-            return false;
-        }
-
-        while(getline(revInFile, rev[revCount].userID, '\t')){
-            
-            revInFile >> rev[revCount].rating;
+            revInFile >> rate;
             revInFile.ignore();
 
-            getline(revInFile, rev[revCount].review, '\t');
-            getline(revInFile, rev[revCount].hotelName, '\t');
+            getline(revInFile, rev, '\t');
             
-            revCount++;
+            getline(revInFile, hotel, '\t');
+
+            review[revNo].setReview(uid, rate, rev,hotel);
+            
+            revNo++;
 
             while(revInFile.peek() == '\n'){
                 revInFile.ignore();
             }
         }
-
+    
+        userInFile.close();
         revInFile.close();
-        cout << "<-------------review.txt successfully read-------------->" << endl;
-        return true;
-    }
-
-    //rW = 1(WRITE) means perform file writing
-    if(rW == 1){
-        cout << endl
-             << "============= Rewriting data into user.txt ==============" << endl
+        cout << "<-------------text files successfully read-------------->" << endl
              << endl;
-
-        ofstream revOutFile("users.txt");
-
-        for(int revNumber = 0; revNumber < (revCount + additionalRevs); revNumber++){
-            revOutFile << rev[revNumber].userID << '\t'
-                        << rev[revNumber].rating << '\t'
-                        << rev[revNumber].review << '\t'
-                        << rev[revNumber].hotelName << '\n';
-        }
-
-        revOutFile.close();
-        cout << "<----------- review.txt successfully updated ----------->" << endl;
-        return true;
     }
+
+}
+
+//  friend global functions declaration
+void writeUserFile(Traveler[]);
+
+void writeReviewFile(Review[], int&);
+
+
+int main(){
+    int reviewNumber = 0;
+    SystemApp app(reviewNumber);
+
+    return 0;
+}
+
+
+//  friend global function definition
+void writeUserFile(Traveler tra[]){
+    cout << endl
+         << "============= Rewriting data into user.txt ==============" << endl
+         << "..." << endl
+         << endl;
+
+    ofstream userOutFile("users.txt");
+
+    for(int userNumber = 0; userNumber < TRAVELER_NUM; userNumber++){
+        userOutFile << tra[userNumber].userID << '\t'
+                    << tra[userNumber].userName << '\t'
+                    << tra[userNumber].state << '\t'
+                    << tra[userNumber].email << '\t'
+                    << tra[userNumber].memberType << '\t'
+                    << tra[userNumber].point << '\n';
+    }
+
+    userOutFile.close();
+    cout << "<------------ user.txt successfully updated ------------>" << endl
+         << endl;
+}
+
+void writeReviewFile(Review rev[],  int& revNo){
+    cout << endl
+         << "============= Rewriting data into user.txt ==============" << endl
+         << "..." << endl
+         << endl;
+
+    ofstream revOutFile("users.txt");
+
+    for(int revNumber = 0; revNumber < revNo; revNumber++){
+        revOutFile << rev[revNumber].userID << '\t'
+                   << rev[revNumber].rating << '\t'
+                   << rev[revNumber].review << '\t'
+                   << rev[revNumber].hotelName << '\n';
+    }
+
+    revOutFile.close();
+    cout << "<----------- review.txt successfully updated ----------->" << endl
+         << endl;
 }

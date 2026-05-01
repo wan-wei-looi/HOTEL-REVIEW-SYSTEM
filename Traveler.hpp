@@ -21,13 +21,11 @@ public:
     void setPoint(int);
     
     //class methods - getters
-    string getMemberType(){return memberType;}
-    int getPoint(){return point;}
+    string getMemberType()const{return memberType;}
+    int getPoint()const{return point;}
     
     //friend function
-    friend void printTravelerInfo(Traveler);
-
-    friend bool readWriteUserFile(Traveler[], bool);
+    friend void writeUserFile(Traveler[]);
 };
 
 #endif TRAVELER_H

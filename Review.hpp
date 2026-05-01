@@ -24,14 +24,13 @@ public:
     void setReview(string, int, string, string);
 
     //class method - getter
-    int getRating(){return rating;}
-    string getReview(){return review;}
-    string getHotelName(){return hotelName;}
+    string getUserID()const{return userID;}
+    int getRating()const{return rating;}
+    string getReview()const{return review;}
+    string getHotelName()const{return hotelName;}
 
     //friend function
-    friend void printReview(Review);
-
-    friend bool readWriteReviewFile(Review[], int, bool);
+    friend void writeReviewFile(Review[], int&);
 };
 
 #endif REVIEW_H
