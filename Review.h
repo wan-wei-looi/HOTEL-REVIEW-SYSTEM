@@ -36,4 +36,4 @@ public:
     friend void writeReviewFile(Review[], int&);
 };
 
-#endif REVIEW_H
+#endif

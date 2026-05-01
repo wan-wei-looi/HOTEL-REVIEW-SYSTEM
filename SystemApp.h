@@ -3,9 +3,9 @@
 
 #include<iostream>
 #include<string>
-#include "Traveler.hpp"
-#include "Review.hpp"
-#include "UniqueHotel.hpp"
+#include "Traveler.h"
+#include "Review.h"
+#include "UniqueHotel.h"
 
 using namespace std;
 
@@ -27,14 +27,14 @@ public:
     Review* getReview(){return review;}
 
     //method
-    void addReview(Traveler[], int&);
+    void addReview(int&);
     void hotelReview();
     void travelerManagement();
-    void highestRatedHotel(const int&, int&);
-    void topReviewers();
+    void sortHotel(const int&, int&);
+    void topReviewers(const int&);
 
     //friend function
     friend void writeUserFile(Traveler[]);
 };
 
-#endif SYSTEMAPP_H
+#endif

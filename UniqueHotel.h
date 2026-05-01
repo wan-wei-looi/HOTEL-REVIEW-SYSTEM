@@ -3,7 +3,7 @@
 
 #include<iostream>
 #include<string>
-#include "Review.hpp"
+#include "Review.h"
 
 using namespace std;
 class UniqueHotel : public Review{
@@ -30,4 +30,4 @@ public:
     bool operator>(const UniqueHotel&)const;
 };
 
-#endif UNIQUE_HOTEL_H
+#endif

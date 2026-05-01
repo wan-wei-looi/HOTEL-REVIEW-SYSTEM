@@ -3,16 +3,46 @@
 #include<fstream>
 #include<iomanip>
 
-#include "Person.hpp"
-#include "Traveler.hpp"
-#include "Review.hpp"
-#include "UniqueHotel.hpp"
-#include "SystemApp.hpp"
+#include "Person.h"
+#include "Traveler.h"
+#include "Review.h"
+#include "UniqueHotel.h"
+#include "SystemApp.h"
 
 using namespace std;
 
 //  Enumurators:
 enum travelerUpdateOpt {USER_NAME, STATE, EMAIL, MEMBER_TYPE, POINT, EXIT};
+
+//  operator overloading - Traveler class
+bool Traveler::operator==(const Traveler& tra){
+    return (this->getUserID() == tra.getUserID());
+}
+
+bool Traveler::operator<(const Traveler& tra){
+    return (
+        this->getAverageRating() < tra.getAverageRating()
+            ||(
+                 this->getAverageRating() == tra.getAverageRating()
+                && this->getReviewNumber() < tra.getReviewNumber()
+            )
+    );
+}
+
+//  operator overloading - UniqueHotel class
+UniqueHotel& UniqueHotel::operator=(const Review& rev){
+    this->setReview(
+        rev.getUserID(),
+        rev.getRating(),
+        rev.getReview(),
+        rev.getHotelName()
+    );
+    return *this;
+}
+
+bool UniqueHotel::operator>(const UniqueHotel& otherHotel)const{
+    return ((this->getAverageRating()) > otherHotel.getAverageRating());
+}
 
 //  setters (line 18 - 41) mainly used for traveler info managemen
 //  class method definition - Person class
@@ -41,6 +71,14 @@ void Traveler::setPoint(int point){
     this->point = point;
 }
 
+void Traveler::setReviewNumber(int num){
+    reviewNumber = num;
+}
+
+void Traveler::setAverageRating(double ave){
+    averageRating = ave;
+}
+
 //  class method definition - Review class
 void Review::setReview(string userID, int rating, string review, string hotelName){
     this->userID = userID;
@@ -54,23 +92,8 @@ void UniqueHotel::setAverageRating(double ave){
     averageRating = ave;
 }
 
-//  operator overloading - UniqueHotel class
-UniqueHotel& UniqueHotel::operator=(const Review& rev){
-    this->setReview(
-        rev.getUserID(),
-        rev.getRating(),
-        rev.getReview(),
-        rev.getHotelName()
-    );
-    return *this;
-}
-
-bool UniqueHotel::operator>(const UniqueHotel& otherHotel)const{
-    return ((this->getAverageRating()) > otherHotel.getAverageRating());
-}
-
 //  class method definition - SystemApp class
-void SystemApp::addReview(Traveler tra[], int& revNo){
+void SystemApp::addReview(int& revNo){
     bool repeat = true;
     string userID;
     int rating;
@@ -90,7 +113,7 @@ void SystemApp::addReview(Traveler tra[], int& revNo){
         getline(cin, userID);
 
         for(int userIndex = 0; userIndex < TRAVELER_NUM; userIndex++){
-            if(userID == tra[userIndex].getUserID()){
+            if(userID == traveler[userIndex].getUserID()){
                 repeat = false;
             }
         }
@@ -278,8 +301,7 @@ void SystemApp::travelerManagement(){
     }
 }
 
-void SystemApp::highestRatedHotel(const int& revNo, int& uniqueHotelNum){
-
+void SystemApp::sortHotel(const int& revNo, int& uniqueHotelNum){
     //  making a list of unique hotel
     for(int i = 0; i < revNo; i++){
         bool sameHotel = false;
@@ -300,8 +322,8 @@ void SystemApp::highestRatedHotel(const int& revNo, int& uniqueHotelNum){
         double rateSum = 0;
         int numHotel = 0;
         for(int j = 0; i < revNo; j++){
-            if(uniqueHotel[i].getHotelName() == review[i].getHotelName()){
-                rateSum += review[i].getRating();
+            if(uniqueHotel[i].getHotelName() == review[j].getHotelName()){
+                rateSum += review[j].getRating();
                 numHotel++;
             }
         }
@@ -321,8 +343,49 @@ void SystemApp::highestRatedHotel(const int& revNo, int& uniqueHotelNum){
     }
 }
 
-void SystemApp::topReviewers(){
-    
+void SystemApp::topReviewers(const int& revNo){
+    Traveler top1, top2, top3;
+    //finding user who gives the highest rating
+    for(int i = 1; i < TRAVELER_NUM; i++){
+        if(top1 == traveler[i] || top2 == traveler[i] || top3 == traveler[i]){
+            continue;
+        }
+        if(top1 < traveler[i]){
+            top3 = top2;
+            top2 = top1;
+            top1 = traveler[i];
+
+        }else if(top2 < traveler[i]){
+            top3 = top2;
+            top2 = traveler[i];
+
+        }else if(top3 < traveler[i]){
+            top3 = traveler[i];
+        }
+    }
+    cout << endl
+         << "TOP 3 REVIEWER LEADERBOARD:" << endl
+         << "=========================================================" << endl
+         << setw(3) << left << " No " 
+         << setw(20) << left << " User Name"
+         << setw(10) << left << "User ID"
+         << "No. of Reviews " << endl
+         << "=========================================================" << endl;
+    cout << setw(3) << left << " 1" 
+         << setw(20) << left << top1.getUserName()
+         << setw(10) << left << top1.getUserID()
+         << top1.getReviewNumber()
+         << endl;
+    cout << setw(3) << left << " 2" 
+         << setw(20) << left << top2.getUserName()
+         << setw(10) << left << top2.getUserID()
+         << top2.getReviewNumber()
+         << endl;
+    cout << setw(3) << left << " 3" 
+         << setw(20) << left << top3.getUserName()
+         << setw(10) << left << top3.getUserID()
+         << top3.getReviewNumber()
+         << endl;
 }
 
 //  constructors - SystemApp class
@@ -396,8 +459,21 @@ SystemApp::SystemApp(int& revNo){
         revInFile.close();
         cout << "<-------------text files successfully read-------------->" << endl
              << endl;
-    }
 
+        //set total number of reviews and average rating from each users
+        for(int i = 0; i < TRAVELER_NUM; i++){
+            int reviewNumber = 0;
+            double totalRating = 0;
+            for(int j = 0; j < revNo; j++){
+                if(traveler[i].getUserID() == review[j].getUserID()){
+                    reviewNumber++;
+                    totalRating += review[j].getRating();
+                }
+            }
+            traveler[i].setReviewNumber(reviewNumber);
+            traveler[i].setAverageRating(totalRating / reviewNumber);
+        }
+    }
 }
 
 //  friend global functions declaration
