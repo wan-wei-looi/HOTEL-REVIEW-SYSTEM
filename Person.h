@@ -12,6 +12,7 @@ protected:
     string userName;
     string state;
     string email;
+
 public:
     //constructor
     Person() : userID(""), userName(""), state(""), email(""){}
@@ -19,13 +20,13 @@ public:
     //destructor
     ~Person(){}
 
-    //class methods - setter
+    //setter
     void setUserID(string userID){this->userID = userID;}
     void setUserName(string userName){this->userName = userName;}
     void setState(string state){this->state = state;}
     void setEmail(string email){this->email = email;}
 
-    //class methods - getters
+    //getters
     string getUserID()const{return userID;}
     string getUserName()const{return userName;}
     string getState()const{return state;}

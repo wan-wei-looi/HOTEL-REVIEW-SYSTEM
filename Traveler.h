@@ -12,6 +12,7 @@ private:
     int point;
     int reviewNumber;
     double averageRating;
+
 public:
     //constructor
     Traveler() : memberType(""), point(0), reviewNumber(0), averageRating(0){}
@@ -19,20 +20,21 @@ public:
     //destructor
     ~Traveler(){}
     
-    //class methods - setters
+    //setters
     void setMemberType(string memberType){this->memberType = memberType;}
     void setPoint(int point){this->point = point;}
-    void setReviewNumber(const int&, const Review[]);
-    void setAverageRating(const int&, const Review[]);
     
-    //class methods - getters
+    //getters
     string getMemberType()const{return memberType;}
     int getPoint()const{return point;}
     int getReviewNumber()const{return reviewNumber;}
     double getAverageRating()const{return averageRating;}
-
+    
     //class method
     void readTravelerInfo(fstream&);
+    
+    void assignReviewNumber(const int&, const Review[]);
+    void assignAverageRating(const int&, const Review[]);
     
     static void travelerManagement(const int&, const int&, Traveler[], Review[]);
     static void topReviewers(const int&, Traveler[]);

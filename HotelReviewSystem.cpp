@@ -14,6 +14,8 @@ using namespace std;
 const int TRAVELER_NUM = 10;
 const int REVIEW_NUM = 50;
 
+
+
 //  Enumurators:
 enum TravelerUpdateOpt {
     USER_NAME,
@@ -35,34 +37,39 @@ enum UserOption {
     EXIT_SYSTEM
 };
 
-//  operator overloading - Traveler class
+
+
+//  operator overloading
+//  Traveler class
 bool Traveler::operator==(const Traveler& tra)const{
-    return (this->getUserID() == tra.getUserID());
+    return (this->userID == tra.userID);
 }
 
 bool Traveler::operator<(const Traveler& tra)const{
     return (
-        this->getReviewNumber() < tra.getReviewNumber()
+        this->reviewNumber < tra.reviewNumber
         ||(
-            this->getReviewNumber() == tra.getReviewNumber()
+            this->reviewNumber == tra.reviewNumber
             &&
-            this->getAverageRating() < tra.getAverageRating()
+            this->averageRating < tra.averageRating
         )
     );
 }
 
-//  operator overloading - UniqueHotel class
+//  UniqueHotel class
 UniqueHotel& UniqueHotel::operator=(const Review& rev){
-    this->setUserID(rev.getUserID());
-    this->setRating(rev.getRating());
-    this->setReview(rev.getReview());
-    this->setHotelName(rev.getHotelName());
+    this->userID = rev.getUserID();
+    this->rating = rev.getRating();
+    this->review = rev.getReview();
+    this->hotelName = rev.getHotelName();
     return *this;
 }
 
 bool UniqueHotel::operator>(const UniqueHotel& otherHotel)const{
-    return ((this->getAverageRating()) > otherHotel.getAverageRating());
+    return ((this->averageRating) > otherHotel.averageRating);
 }
+
+
 
 //  print function prototype
 void printMainMenu();
@@ -77,23 +84,25 @@ void printTableFooter();
 
 
 
-//  class setters
-void Traveler::setReviewNumber(const int& revNo, const Review review[]){
+//  assigning number of reviews for each user
+void Traveler::assignReviewNumber(const int& revNo, const Review review[]){
     int reviewNumber = 0;
 
     for(int reviewIndex = 0; reviewIndex < revNo; reviewIndex++){
-        if(getUserID() == review[reviewIndex].getUserID()){
+        if(userID == review[reviewIndex].getUserID()){
             reviewNumber++;
         }
     }
+
     this->reviewNumber = reviewNumber;
 }
 
-void Traveler::setAverageRating(const int& revNo, const Review review[]){
+//  assigning average rating from each user
+void Traveler::assignAverageRating(const int& revNo, const Review review[]){
     double totalRating = 0;
 
     for(int reviewIndex = 0; reviewIndex < revNo; reviewIndex++){
-        if(getUserID() == review[reviewIndex].getUserID()){
+        if(userID == review[reviewIndex].getUserID()){
             totalRating += review[reviewIndex].getRating();
         }
     }
@@ -105,32 +114,38 @@ void Traveler::setAverageRating(const int& revNo, const Review review[]){
     }
 }
 
-void UniqueHotel::assignUniqueHotel(const int& revNo, int& uniqueHotelNum, const Review review[], UniqueHotel uniqueHotel[]){
+
+
+//  assigning number of reviews and average rating for each hotel
+void UniqueHotel::assignUniqueHotels(const int& revNo, int& uniqueHotelNum, const Review review[], UniqueHotel uniqueHotel[]){
     for(int i = 0; i < revNo; i++){
         bool sameHotel = false;
+
         for(int j = 0; j < uniqueHotelNum; j++){
-            if(uniqueHotel[j].getHotelName() == review[i].getHotelName()){
+            if(uniqueHotel[j].hotelName == review[i].getHotelName()){
                 sameHotel = true;
                 break;
             }
         }
+
         if(!sameHotel){
             uniqueHotel[uniqueHotelNum] = review[i];
             uniqueHotelNum++;
         }
     }
-    //assigning number of reviews and average rating for each hotel
+
     for(int i = 0; i < uniqueHotelNum; i++){
         double rateSum = 0;
         int numHotel = 0;
+
         for(int j = 0; j < revNo; j++){
-            if(uniqueHotel[i].getHotelName() == review[j].getHotelName()){
+            if(uniqueHotel[i].hotelName == review[j].getHotelName()){
                 rateSum += review[j].getRating();
                 numHotel++;
             }
         }
-        uniqueHotel[i].numReview = numHotel;
 
+        uniqueHotel[i].numReview = numHotel;
         if(numHotel){
             uniqueHotel[i].averageRating = rateSum / numHotel;
         }else{
@@ -140,10 +155,11 @@ void UniqueHotel::assignUniqueHotel(const int& revNo, int& uniqueHotelNum, const
 }
 
 
-//  sorting unique hotels based on average rating
+
+//  sorting unique hotels ONLY based on average rating
 void UniqueHotel::sortHotel(const int& uniqueHotelNum, UniqueHotel uniqueHotel[]){
-    //  sort uniqueHotel ONLY based on average rating
     UniqueHotel temp;
+
     for(int i = 0; i < uniqueHotelNum; i++){
         for(int j = i + 1; j < uniqueHotelNum; j++){
             if(uniqueHotel[j] > uniqueHotel[i]){
@@ -157,7 +173,8 @@ void UniqueHotel::sortHotel(const int& uniqueHotelNum, UniqueHotel uniqueHotel[]
 
 
 
-//  class methods - print function
+//  class methods 
+//  print function
 void Traveler::printTraveler()const{
     cout << setw(8) << left << userID << " | "
          << setw(20) << left << userName << " | "
@@ -168,23 +185,24 @@ void Traveler::printTraveler()const{
 }
 
 void Review::printReview()const{
-    cout << setw(8) << left << getUserID() << " | "
-         << setw(10) << left << getRating() << " | "
-         << setw(25) << left << getHotelName() << " | "
-         << getReview() << endl;
+    cout << setw(8) << left << userID << " | "
+         << setw(10) << left << rating << " | "
+         << setw(25) << left << hotelName << " | "
+         << review << endl;
 }
 
 void UniqueHotel::printUniqueHotel(const int& hotelIndex)const{
     cout << " " << setw(4) << left << (hotelIndex + 1) << " | "
-             << fixed << setprecision(2) 
-             << setw(30) << left << getHotelName() << " | "
-             << setw(20) << left << getNumReview() << " | "
-             << setw(20) << left << getAverageRating() << " | ";
-        for(int stars = 0; stars < getAverageRating(); stars++){
+         << fixed << setprecision(2) 
+         << setw(30) << left << hotelName << " | "
+         << setw(20) << left << numReview << " | "
+         << setw(20) << left << averageRating << " | ";
+    for(int stars = 0; stars < averageRating; stars++){
             cout << "*";
-        }
-        cout << endl;
+    }
+    cout << endl;
 }
+
 
 
 //  file reading
@@ -193,22 +211,22 @@ void Traveler::readTravelerInfo(fstream& userFile){
     string input;
 
     getline(userFile, input, '\t');
-    setUserID(input);
+    userID = input;
 
     getline(userFile, input, '\t');
-    setUserName(input);
+    userName = input;
 
     getline(userFile, input, '\t');
-    setState(input);
+    state = input;
     
     getline(userFile, input, '\t');
-    setEmail(input);
+    email = input;
 
     getline(userFile, input, '\t');
-    setMemberType(input);
+    memberType = input;
     
     userFile >> numInput;
-    setPoint(numInput);
+    point = numInput;
 
     while(userFile.peek() == '\n'){
         userFile.ignore();
@@ -220,17 +238,17 @@ void Review::readReviewList(fstream& revFile){
     int numInput;
 
     getline(revFile, input, '\t');
-    setUserID(input);
+    userID = input;
 
     revFile >> numInput;
     revFile.ignore();
-    setRating(numInput);
+    rating = numInput;
 
     getline(revFile, input, '\t');
-    setReview(input);
+    review = input;
     
     getline(revFile, input, '\n');
-    setHotelName(input);
+    hotelName = input;
 
     while(revFile.peek() == '\n'){
         revFile.ignore();
@@ -239,44 +257,7 @@ void Review::readReviewList(fstream& revFile){
 
 
 
-void Review::searchReview(Review review[]){
-    string hotelName = "";
-    int hotelRevNo = 0;
-    
-    cout << endl
-         << "Insert hotel name: (Input is case sensitive)"
-         << endl;
-    
-    getline(cin, hotelName);
-
-    for(int reviewIndex = 0; reviewIndex < REVIEW_NUM; reviewIndex++){
-        if(reviewIndex == 0){
-            cout << endl
-                 << "HOTEL REVIEWS FOR : " << hotelName << endl
-                 << "=============================================================================================================" << endl
-                 << setw(8) << left << "User ID" << setw(10) << left << "| Rating" << setw(25) << left << "| Hotel" << "| Review" << endl
-                 << "=============================================================================================================" << endl;
-        }
-        if(review[reviewIndex].getHotelName() == hotelName){
-            cout << setw(8) << left << review[reviewIndex].getUserID() << "| "
-                 << setw(8) << left << review[reviewIndex].getRating() << "| "
-                 << setw(23) << left << review[reviewIndex].getHotelName() << "| "
-                 << review[reviewIndex].getReview()
-                 << endl;
-            hotelRevNo++;
-        }
-    }
-
-    if(hotelRevNo){
-        cout << endl
-             << "There are " << hotelRevNo << " number of reviews for " << hotelName << "." << endl;
-    }else{
-        cout << endl
-             << "There are no reviews for this Hotel, make sure your input is correct..." << endl;
-    }
-    cout << "=============================================================================================================" << endl;
-}
-
+//  system functions
 void Traveler::travelerManagement(const int& userCount, const int& revNo, Traveler traveler[], Review review[]){
     string input;
     int numInput;
@@ -292,7 +273,7 @@ void Traveler::travelerManagement(const int& userCount, const int& revNo, Travel
 
     //searching for the user based on uid
     for(travelerIndex; travelerIndex < userCount; travelerIndex++){
-        if(traveler[travelerIndex].getUserID() == input){
+        if(traveler[travelerIndex].userID == input){
             updateInfo = true;
             break;
         }
@@ -323,57 +304,58 @@ void Traveler::travelerManagement(const int& userCount, const int& revNo, Travel
             //update userName
             case USER_NAME:
                 cout << endl
-                     << "Please insert new user name or remain the current user name: (current user name: " << traveler[travelerIndex].getUserName() << ")"
+                     << "Please insert new user name or remain the current user name: (current user name: " << traveler[travelerIndex].userName << ")"
                      << endl;
                 getline(cin, input);
-                traveler[travelerIndex].setUserName(input);
+                traveler[travelerIndex].userName = input;
                 break;
 
             //update state
             case STATE:
                 cout << endl
-                     << "Please insert new state or remain the current state: (current state: " << traveler[travelerIndex].getState() << ")"
+                     << "Please insert new state or remain the current state: (current state: " << traveler[travelerIndex].state << ")"
                      << endl;
                 getline(cin, input);
-                traveler[travelerIndex].setState(input);
+                traveler[travelerIndex].state = input;
                 break;
 
             //update email
             case EMAIL:
                 cout << endl
-                     << "Please insert new email or remain the current email: (current email: " << traveler[travelerIndex].getEmail() << ")"
+                     << "Please insert new email or remain the current email: (current email: " << traveler[travelerIndex].email << ")"
                      << endl;
                 getline(cin, input);
-                traveler[travelerIndex].setEmail(input);
+                traveler[travelerIndex].email = input;
                 break;
 
             //update memberType
             case MEMBER_TYPE:
                 cout << endl
-                     << "Please insert new member type or remain the current member type: (current member type: " << traveler[travelerIndex].getMemberType() << ")"
+                     << "Please insert new member type or remain the current member type: (current member type: " << traveler[travelerIndex].memberType << ")"
                      << endl;
                 getline(cin, input);
-                traveler[travelerIndex].setMemberType(input);
+                traveler[travelerIndex].memberType = input;
                 break;
 
             //update point
             case POINT:
                 cout << endl
-                     << "Please insert new point or remain the current point: (current point: " << traveler[travelerIndex].getPoint() << ")"
+                     << "Please insert new point or remain the current point: (current point: " << traveler[travelerIndex].point << ")"
                      << endl;
                 cin >> numInput;
                 cin.ignore();
-                traveler[travelerIndex].setPoint(numInput);
+                traveler[travelerIndex].point = numInput;
                 break;
 
+            //update review from user
             case REVIEW:
                 cout << endl
                      << " Review Index  |  Review" << endl
                      << "-------------------------------------------------------------------------------------------------------------" << endl;
                 for(int reviewIndex = 0; reviewIndex < revNo; reviewIndex++){
-                    if(review[reviewIndex].getUserID() == traveler[travelerIndex].getUserID()){
-                        cout << setw(8) << reviewIndex
-                             << " | "
+                    if(review[reviewIndex].getUserID() == traveler[travelerIndex].userID){
+                        cout << " " << setw(12) << reviewIndex
+                             << "  |  "
                              << review[reviewIndex].getReview()
                              << endl;
                     }
@@ -388,7 +370,8 @@ void Traveler::travelerManagement(const int& userCount, const int& revNo, Travel
                 getline(cin, input);
                 review[numInput].setReview(input);
                 break;
-
+            
+            //exit subpage
             case EXIT:
                 updateInfo = false;
                 break;
@@ -399,6 +382,44 @@ void Traveler::travelerManagement(const int& userCount, const int& revNo, Travel
                      << endl;
         }
     }
+}
+
+void Review::searchReview(Review review[]){
+    string hotelName = "";
+    int hotelRevNo = 0;
+    
+    cout << endl
+         << "Insert hotel name: (Input is case sensitive)"
+         << endl;
+    
+    getline(cin, hotelName);
+
+    for(int reviewIndex = 0; reviewIndex < REVIEW_NUM; reviewIndex++){
+        if(reviewIndex == 0){
+            cout << endl
+                 << "HOTEL REVIEWS FOR : " << hotelName << endl
+                 << "=============================================================================================================" << endl
+                 << setw(8) << left << "User ID" << setw(10) << left << "| Rating" << setw(25) << left << "| Hotel" << "| Review" << endl
+                 << "=============================================================================================================" << endl;
+        }
+        if(review[reviewIndex].hotelName == hotelName){
+            cout << setw(8) << left << review[reviewIndex].userID << "| "
+                 << setw(8) << left << review[reviewIndex].rating << "| "
+                 << setw(23) << left << review[reviewIndex].hotelName << "| "
+                 << review[reviewIndex].review
+                 << endl;
+            hotelRevNo++;
+        }
+    }
+
+    if(hotelRevNo){
+        cout << endl
+             << "There are " << hotelRevNo << " number of reviews for " << hotelName << "." << endl;
+    }else{
+        cout << endl
+             << "There are no reviews for this Hotel, make sure your input is correct..." << endl;
+    }
+    cout << "=============================================================================================================" << endl;
 }
 
 void Review::addReview(int& revNo, const string UID[], Review review[]){
@@ -418,10 +439,11 @@ void Review::addReview(int& revNo, const string UID[], Review review[]){
 
         getline(cin, input);
 
+        //user ID validation
         for(int userIndex = 0; userIndex < TRAVELER_NUM; userIndex++){
             if(input == UID[userIndex]){
                 repeat = false;
-                review[revNo].setUserID(input);
+                review[revNo].userID = input;
             }
         }
         if(repeat){
@@ -439,7 +461,7 @@ void Review::addReview(int& revNo, const string UID[], Review review[]){
          << "------------------------------------------------------" << endl;
 
     getline(cin, input);
-    review[revNo].setHotelName(input);
+    review[revNo].hotelName = input;
     
     do{
         cout << endl
@@ -451,13 +473,14 @@ void Review::addReview(int& revNo, const string UID[], Review review[]){
         cin.ignore();
 
         if(numInput < 1 || numInput > 5){
+            repeat = true;
             cout << endl
                  << "Please try again, rating must be between 1 and 5 (inclusive)" << endl
                  << endl;
         }else{
-            review[revNo].setRating(numInput);
+            review[revNo].rating = numInput;
         }
-    }while(numInput < 1 || numInput > 5);
+    }while(repeat);
 
     cout << endl
          << "------------------------------------------------------" << endl
@@ -465,7 +488,7 @@ void Review::addReview(int& revNo, const string UID[], Review review[]){
          << "------------------------------------------------------" << endl;
 
     getline(cin, input);
-    review[revNo].setReview(input);
+    review[revNo].review = input;
     
     revNo++;
 
@@ -474,7 +497,6 @@ void Review::addReview(int& revNo, const string UID[], Review review[]){
          << endl;
 }
 
-//add into traveler class
 void Traveler::topReviewers(const int& userCount, Traveler traveler[]){
     Traveler top1, top2, top3;
     
@@ -543,7 +565,7 @@ void writeReviewFile(Review[], const int&, fstream&);
 UserOption userSelection();
 
 int main(){
-
+    
     fstream userFile("users.txt", ios::in | ios::out);
     fstream revFile("reviews.txt", ios::in | ios::out);
 
@@ -574,8 +596,8 @@ int main(){
 
     //  assigning number of reviews and average rating of each users
     for(int travelerIndex = 0; travelerIndex < userCount; travelerIndex++){
-        traveler[travelerIndex].setReviewNumber(reviewNumber, review);
-        traveler[travelerIndex].setAverageRating(reviewNumber, review);
+        traveler[travelerIndex].assignReviewNumber(reviewNumber, review);
+        traveler[travelerIndex].assignAverageRating(reviewNumber, review);
     }
 
     //  print out user and review for confirmation
@@ -596,11 +618,12 @@ int main(){
          << endl;
     cout << endl << endl << endl;
 
+
     UniqueHotel uniqueHotel[REVIEW_NUM];
-    UniqueHotel::assignUniqueHotel(reviewNumber, uniqueHotelNum, review, uniqueHotel);
+    UniqueHotel::assignUniqueHotels(reviewNumber, uniqueHotelNum, review, uniqueHotel);
 
     //  an array of user ID initialised
-    string UID[userCount];
+    string UID[TRAVELER_NUM];
     for(int userIndex = 0; userIndex < userCount; userIndex++){
         UID[userIndex] = traveler[userIndex].getUserID();
     }
@@ -641,9 +664,13 @@ int main(){
 
                 // update traveler reviewNumber and averageRating
                 for(int travelerIndex = 0; travelerIndex < userCount; travelerIndex++){
-                    traveler[travelerIndex].setReviewNumber(reviewNumber, review);
-                    traveler[travelerIndex].setAverageRating(reviewNumber, review);
+                    traveler[travelerIndex].assignReviewNumber(reviewNumber, review);
+                    traveler[travelerIndex].assignAverageRating(reviewNumber, review);
                 }
+
+                // update number of reviews and average rating of each hotels
+                UniqueHotel::assignUniqueHotels(reviewNumber, uniqueHotelNum, review, uniqueHotel);
+
                 break;
 
             case HIGHEST_RATED_HOTEL:
@@ -668,7 +695,7 @@ int main(){
                 writeReviewFile(review, reviewNumber, revFile);
                 break;
                 
-                default:
+            default:
                 cout << endl
                 << "Input error, try again..."
                 << endl;

@@ -7,7 +7,7 @@
 using namespace std;
 
 class Review{
-private:
+protected:
     string userID;
     int rating;
     string review;
@@ -20,13 +20,13 @@ public:
     //destructor
     ~Review(){};
 
-    //class method - setter
+    //setter
     void setUserID(string userID){this->userID = userID;}
     void setRating(int rating){this->rating = rating;}
     void setReview(string review){this->review = review;}
     void setHotelName(string hotelName){this->hotelName = hotelName;}
 
-    //class method - getter
+    //getter
     string getUserID()const{return userID;}
     int getRating()const{return rating;}
     string getReview()const{return review;}

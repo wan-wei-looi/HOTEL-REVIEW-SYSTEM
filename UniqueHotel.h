@@ -10,6 +10,7 @@ class UniqueHotel : public Review{
 private:
     int numReview;
     double averageRating;
+
 public:
     //constructor
     UniqueHotel() : numReview(0), averageRating(0){}
@@ -17,16 +18,16 @@ public:
     //destructor
     ~UniqueHotel(){}
 
-    //class method - setter
-    static void assignUniqueHotel(const int&, int&, const Review[], UniqueHotel[]);
-
-    //class method - getter
+    
+    
+    //getter
     int getNumReview()const{return numReview;}
     double getAverageRating()const{return averageRating;}
-
+    
     //class method
+    static void assignUniqueHotels(const int&, int&, const Review[], UniqueHotel[]);
     static void sortHotel(const int&, UniqueHotel[]);
-
+    
     void printUniqueHotel(const int&)const;
 
     //operator overloading

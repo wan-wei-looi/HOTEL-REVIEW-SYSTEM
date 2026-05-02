@@ -1,6 +1,6 @@
 U001	5	Excellent service and clean room	Grand Imperial Hotel
 U001	4	Location is GREAT but bad breakfast	Grand Imperial Hotel
-U001	5	Loved the facilities and friendly staff	Seaview Resort
+U001	5	Loved the facilities and the staffs are friendly	Seaview Resort
 U002	4	Comfortable stay and good WiFi	Bayfront Hotel
 U002	3	Average experience, room was small	CityView Hotel
 U002	5	Superb hospitality	Sunrise Deluxe Hotel
@@ -30,3 +30,4 @@ U010	4	Better than expected	BudgetStay Inn
 U010	2	Old furniture and noisy environment	Hilltop Residence
 U008	5	green	greenLeafHotel
 U007	5	spacious, I love it	GreenLeaf Hotel
+U001	5	I love the ocean view	Seaview Resort
