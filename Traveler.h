@@ -4,6 +4,7 @@
 #include<iostream>
 #include<string>
 #include "Person.h"
+#include "Review.h"
 
 class Traveler: public Person{
 private:
@@ -21,8 +22,8 @@ public:
     //class methods - setters
     void setMemberType(string memberType){this->memberType = memberType;}
     void setPoint(int point){this->point = point;}
-    void setReviewNumber(int num){reviewNumber = num;}
-    void setAverageRating(double ave){averageRating = ave;}
+    void setReviewNumber(const int&, const Review[]);
+    void setAverageRating(const int&, const Review[]);
     
     //class methods - getters
     string getMemberType()const{return memberType;}
@@ -30,12 +31,20 @@ public:
     int getReviewNumber()const{return reviewNumber;}
     double getAverageRating()const{return averageRating;}
 
+    //class method
+    void readTravelerInfo(fstream&);
+    
+    static void travelerManagement(const int&, const int&, Traveler[], Review[]);
+    static void topReviewers(const int&, Traveler[]);
+
+    void printTraveler()const;
+
     //operator overloading
     bool operator==(const Traveler&)const;
     bool operator<(const Traveler&)const;
     
     //friend function
-    friend void writeUserFile(Traveler[]);
+    friend void writeUserFile(Traveler[], const int&, fstream&);
 };
 
 #endif

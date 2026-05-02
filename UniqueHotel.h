@@ -18,12 +18,16 @@ public:
     ~UniqueHotel(){}
 
     //class method - setter
-    void setNumReview(int num){numReview = num;}
-    void setAverageRating(double ave){averageRating = ave;}
+    static void assignUniqueHotel(const int&, int&, const Review[], UniqueHotel[]);
 
     //class method - getter
     int getNumReview()const{return numReview;}
     double getAverageRating()const{return averageRating;}
+
+    //class method
+    static void sortHotel(const int&, UniqueHotel[]);
+
+    void printUniqueHotel(const int&)const;
 
     //operator overloading
     UniqueHotel& operator=(const Review&);

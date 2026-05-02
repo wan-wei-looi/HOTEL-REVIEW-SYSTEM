@@ -28,3 +28,5 @@ U009	5	Great food and friendly staff	GreenLeaf Hotel
 U010	3	Simple and affordable	BudgetStay Inn
 U010	4	Better than expected	BudgetStay Inn
 U010	2	Old furniture and noisy environment	Hilltop Residence
+U008	5	green	greenLeafHotel
+U007	5	spacious, I love it	GreenLeaf Hotel

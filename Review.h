@@ -32,8 +32,16 @@ public:
     string getReview()const{return review;}
     string getHotelName()const{return hotelName;}
 
+    //class method
+    void readReviewList(fstream&);
+
+    static void searchReview(Review[]);
+    static void addReview(int&, const string[], Review[]);
+
+    void printReview()const;
+
     //friend function
-    friend void writeReviewFile(Review[], int&);
+    friend void writeReviewFile(Review[], const int&, fstream&);
 };
 
 #endif
