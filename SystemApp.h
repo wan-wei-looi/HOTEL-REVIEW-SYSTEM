@@ -27,11 +27,18 @@ public:
     Review* getReview(){return review;}
 
     //method
-    void addReview(int&);
+    void updateUserAveRating(const int&);
+
     void hotelReview();
-    void travelerManagement();
+    void travelerManagement(const int&);
+    void addReview(int&);
     void sortHotel(const int&, int&);
-    void topReviewers(const int&);
+    void topReviewers();
+    
+    //class method - print function
+    void printTraveler()const;
+    void printReview(const int&)const;
+    void printUniqueHotel(const int&)const;
 
     //friend function
     friend void writeUserFile(Traveler[]);

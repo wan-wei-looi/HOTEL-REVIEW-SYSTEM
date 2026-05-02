@@ -8,22 +8,22 @@
 using namespace std;
 class UniqueHotel : public Review{
 private:
+    int numReview;
     double averageRating;
 public:
     //constructor
-    UniqueHotel() : averageRating(0){}
+    UniqueHotel() : numReview(0), averageRating(0){}
 
     //destructor
     ~UniqueHotel(){}
 
     //class method - setter
-    void setAverageRating(double);
+    void setNumReview(int num){numReview = num;}
+    void setAverageRating(double ave){averageRating = ave;}
 
     //class method - getter
+    int getNumReview()const{return numReview;}
     double getAverageRating()const{return averageRating;}
-
-    //class method - print function
-    void printUniqueHotel()const;
 
     //operator overloading
     UniqueHotel& operator=(const Review&);

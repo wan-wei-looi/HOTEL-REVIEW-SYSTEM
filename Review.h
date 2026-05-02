@@ -21,16 +21,16 @@ public:
     ~Review(){};
 
     //class method - setter
-    void setReview(string, int, string, string);
+    void setUserID(string userID){this->userID = userID;}
+    void setRating(int rating){this->rating = rating;}
+    void setReview(string review){this->review = review;}
+    void setHotelName(string hotelName){this->hotelName = hotelName;}
 
     //class method - getter
     string getUserID()const{return userID;}
     int getRating()const{return rating;}
     string getReview()const{return review;}
     string getHotelName()const{return hotelName;}
-
-    //class method - print function
-    void printReview()const;
 
     //friend function
     friend void writeReviewFile(Review[], int&);

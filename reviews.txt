@@ -1,5 +1,5 @@
 U001	5	Excellent service and clean room	Grand Imperial Hotel
-U001	4	Great location but breakfast can improve	Grand Imperial Hotel
+U001	4	Location is GREAT but bad breakfast	Grand Imperial Hotel
 U001	5	Loved the facilities and friendly staff	Seaview Resort
 U002	4	Comfortable stay and good WiFi	Bayfront Hotel
 U002	3	Average experience, room was small	CityView Hotel

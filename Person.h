@@ -20,10 +20,10 @@ public:
     ~Person(){}
 
     //class methods - setter
-    void setUserID(string);
-    void setUserName(string);
-    void setState(string);
-    void setEmail(string);
+    void setUserID(string userID){this->userID = userID;}
+    void setUserName(string userName){this->userName = userName;}
+    void setState(string state){this->state = state;}
+    void setEmail(string email){this->email = email;}
 
     //class methods - getters
     string getUserID()const{return userID;}

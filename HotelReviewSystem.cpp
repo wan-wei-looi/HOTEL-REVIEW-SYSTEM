@@ -12,31 +12,48 @@
 using namespace std;
 
 //  Enumurators:
-enum travelerUpdateOpt {USER_NAME, STATE, EMAIL, MEMBER_TYPE, POINT, EXIT};
+enum TravelerUpdateOpt {
+    USER_NAME,
+    STATE,
+    EMAIL,
+    MEMBER_TYPE,
+    POINT,
+    REVIEW,
+    EXIT
+};
+
+enum UserOption {
+    SHOW_DATA,
+    SEARCH,
+    TRAVELER_MANAGEMENT,
+    ADD_REVIEWS,
+    HIGHEST_RATED_HOTEL,
+    TOP_REVIEWERS,
+    EXIT_SYSTEM
+};
 
 //  operator overloading - Traveler class
-bool Traveler::operator==(const Traveler& tra){
+bool Traveler::operator==(const Traveler& tra)const{
     return (this->getUserID() == tra.getUserID());
 }
 
-bool Traveler::operator<(const Traveler& tra){
+bool Traveler::operator<(const Traveler& tra)const{
     return (
-        this->getAverageRating() < tra.getAverageRating()
-            ||(
-                 this->getAverageRating() == tra.getAverageRating()
-                && this->getReviewNumber() < tra.getReviewNumber()
-            )
+        this->getReviewNumber() < tra.getReviewNumber()
+        ||(
+            this->getReviewNumber() == tra.getReviewNumber()
+            &&
+            this->getAverageRating() < tra.getAverageRating()
+        )
     );
 }
 
 //  operator overloading - UniqueHotel class
 UniqueHotel& UniqueHotel::operator=(const Review& rev){
-    this->setReview(
-        rev.getUserID(),
-        rev.getRating(),
-        rev.getReview(),
-        rev.getHotelName()
-    );
+    this->setUserID(rev.getUserID());
+    this->setRating(rev.getRating());
+    this->setReview(rev.getReview());
+    this->setHotelName(rev.getHotelName());
     return *this;
 }
 
@@ -44,55 +61,257 @@ bool UniqueHotel::operator>(const UniqueHotel& otherHotel)const{
     return ((this->getAverageRating()) > otherHotel.getAverageRating());
 }
 
-//  setters (line 18 - 41) mainly used for traveler info managemen
-//  class method definition - Person class
-void Person::setUserID(string userID){
-    this->userID = userID;
+//  class methods - print function
+void SystemApp::printTraveler()const{
+    cout << endl
+         << "TRAVELER INFORMATION: "<< endl
+         << "=============================================================================================================" << endl
+         << setw(8) << left << "User ID" << " | "
+         << setw(20) << left << "User Name" << " | "
+         << setw(18) << left << "State" << " | "
+         << setw(25) << left << "Email" << " | "
+         << setw(15) << left << "Membership" << " | "
+         << "Points" << endl
+         << "=============================================================================================================" << endl;
+
+    for(int travelerIndex = 0; travelerIndex < TRAVELER_NUM; travelerIndex++){
+        cout << setw(8) << left << traveler[travelerIndex].getUserID() << " | "
+             << setw(20) << left << traveler[travelerIndex].getUserName() << " | "
+             << setw(18) << left << traveler[travelerIndex].getState() << " | "
+             << setw(25) << left << traveler[travelerIndex].getEmail() << " | "
+             << setw(15) << left << traveler[travelerIndex].getMemberType() << " | "
+             << traveler[travelerIndex].getPoint() << endl;
+    }
+    cout << "=============================================================================================================" << endl;
 }
 
-void Person::setUserName(string userName){
-    this->userName = userName;
+void SystemApp::printReview(const int& revNo)const{
+    cout << endl
+         << "REVIEW LIST: "<< endl
+         << "=============================================================================================================" << endl
+         << setw(10) << left << "User ID" << " | "
+         << setw(10) << left << "Rating" << " | "
+         << setw(25) << left << "Hotel" << " | "
+         << "Review" << endl
+         << "=============================================================================================================" << endl;
+
+    for(int reviewIndex = 0; reviewIndex < revNo; reviewIndex++){
+        cout << setw(10) << left << review[reviewIndex].getUserID() << " | "
+             << setw(10) << left << review[reviewIndex].getRating() << " | "
+             << setw(25) << left << review[reviewIndex].getHotelName() << " | "
+             << review[reviewIndex].getReview() << endl;
+    }
+    cout << "=============================================================================================================" << endl;
 }
 
-void Person::setState(string state){
-    this->state = state;
-}
-
-void Person::setEmail(string email){
-    this->email = email;
-}
-
-//  class method definition - Traveler class
-void Traveler::setMemberType(string memberType){
-    this->memberType = memberType;
-}
-
-void Traveler::setPoint(int point){
-    this->point = point;
-}
-
-void Traveler::setReviewNumber(int num){
-    reviewNumber = num;
-}
-
-void Traveler::setAverageRating(double ave){
-    averageRating = ave;
-}
-
-//  class method definition - Review class
-void Review::setReview(string userID, int rating, string review, string hotelName){
-    this->userID = userID;
-    this->rating = rating;
-    this->review = review;
-    this->hotelName = hotelName;
-}
-
-//  class method definition - UniqueHotel Class
-void UniqueHotel::setAverageRating(double ave){
-    averageRating = ave;
+void SystemApp::printUniqueHotel(const int& unique)const{
+    cout << endl
+         << "HOTEL RANKING BASED ON AVERAGE RATING: "<< endl
+         << "=============================================================================================================" << endl
+         << setw(5) << left << " Rank" << " | "
+         << setw(30) << left << "Hotel" << " | "
+         << setw(20) << left << "Number of Reviews" << " | "
+         << setw(20) << left << "Average rating"  << " | "
+         << "Stars" << endl
+         << "=============================================================================================================" << endl;
+    for(int hotelIndex = 0; hotelIndex < unique; hotelIndex++){
+        cout << " " << setw(4) << left << (hotelIndex + 1) << " | "
+             << fixed << setprecision(2) 
+             << setw(30) << left << uniqueHotel[hotelIndex].getHotelName() << " | "
+             << setw(20) << left << uniqueHotel[hotelIndex].getNumReview() << " | "
+             << setw(20) << left << uniqueHotel[hotelIndex].getAverageRating() << " | ";
+        for(int stars = 0; stars < uniqueHotel[hotelIndex].getAverageRating(); stars++){
+            cout << "*";
+        }
+        cout << endl;
+    }
+    cout << "=============================================================================================================" << endl;
 }
 
 //  class method definition - SystemApp class
+void SystemApp::updateUserAveRating(const int& revNo){
+    //set or update total number of reviews and average rating from each users
+    for(int travelerIndex = 0; travelerIndex < TRAVELER_NUM; travelerIndex++){
+        int reviewNumber = 0;
+        double totalRating = 0;
+
+        for(int reviewIndex = 0; reviewIndex < revNo; reviewIndex++){
+            if(traveler[travelerIndex].getUserID() == review[reviewIndex].getUserID()){
+                reviewNumber++;
+                totalRating += review[reviewIndex].getRating();
+            }
+        }
+        traveler[travelerIndex].setReviewNumber(reviewNumber);
+        if(reviewNumber){
+            traveler[travelerIndex].setAverageRating(totalRating / reviewNumber);
+        }else{
+            traveler[travelerIndex].setAverageRating(0);
+        }
+    }
+}
+
+void SystemApp::hotelReview(){
+    string hotelName = "";
+    int hotelRevNo = 0;
+    
+    cout << endl
+         << "Insert hotel name: (Input is case sensitive)"
+         << endl;
+    
+    getline(cin, hotelName);
+
+    for(int reviewIndex = 0; reviewIndex < REVIEW_NUM; reviewIndex++){
+        if(reviewIndex == 0){
+            cout << endl
+                 << "HOTEL REVIEWS FOR : " << hotelName << endl
+                 << "=============================================================================================================" << endl
+                 << setw(10) << left << "User ID" << setw(10) << left << "| Rating" << setw(25) << left << "| Hotel" << "| Review" << endl
+                 << "=============================================================================================================" << endl;
+        }
+        if(review[reviewIndex].getHotelName() == hotelName){
+            cout << setw(10) << left << review[reviewIndex].getUserID() << "| "
+                 << setw(8) << left << review[reviewIndex].getRating() << "| "
+                 << setw(23) << left << review[reviewIndex].getHotelName() << "| "
+                 << review[reviewIndex].getReview()
+                 << endl;
+            hotelRevNo++;
+        }
+    }
+
+    if(hotelRevNo){
+        cout << endl
+             << "There are " << hotelRevNo << " number of reviews for " << hotelName << "." << endl;
+    }else{
+        cout << endl
+             << "There are no reviews for this Hotel, make sure your input is correct..." << endl;
+    }
+    cout << "=============================================================================================================" << endl;
+}
+
+void SystemApp::travelerManagement(const int& revNo){
+    string input;
+    int numInput;
+    
+    TravelerUpdateOpt options;
+    int travelerIndex = 0;
+    bool updateInfo = false;
+
+    cout << endl
+         << "Enter user ID to configure the corresponding user information: "
+         << endl;
+    getline(cin, input);
+
+    //searching for the user based on uid
+    for(travelerIndex; travelerIndex < TRAVELER_NUM; travelerIndex++){
+        if(traveler[travelerIndex].getUserID() == input){
+            updateInfo = true;
+            break;
+        }
+    }
+    if(!updateInfo){
+        cout << endl
+             << "UserID not found..."
+             << endl;
+    }
+
+    while(updateInfo){
+        cout << endl
+             << "============== Traveler information update ==============" << endl
+             << "  1. USER NAME" << endl
+             << "  2. STATE" << endl
+             << "  3. EMAIL" << endl
+             << "  4. MEMBER TYPE" << endl
+             << "  5. POINTS" << endl
+             << "  6. REVIEWS BY TRAVELER" << endl
+             << "  7. EXIT SUBPAGE" << endl
+             << "---------------------------------------------------------" << endl;
+        cin >> numInput;
+        cin.ignore();
+
+        options = static_cast<TravelerUpdateOpt>(--numInput);
+
+        switch(options){
+            //update userName
+            case USER_NAME:
+                cout << endl
+                     << "Please insert new user name or remain the current user name: (current user name: " << traveler[travelerIndex].getUserName() << ")"
+                     << endl;
+                getline(cin, input);
+                traveler[travelerIndex].setUserName(input);
+                break;
+
+            //update state
+            case STATE:
+                cout << endl
+                     << "Please insert new state or remain the current state: (current state: " << traveler[travelerIndex].getState() << ")"
+                     << endl;
+                getline(cin, input);
+                traveler[travelerIndex].setState(input);
+                break;
+
+            //update email
+            case EMAIL:
+                cout << endl
+                     << "Please insert new email or remain the current email: (current email: " << traveler[travelerIndex].getEmail() << ")"
+                     << endl;
+                getline(cin, input);
+                traveler[travelerIndex].setEmail(input);
+                break;
+
+            //update memberType
+            case MEMBER_TYPE:
+                cout << endl
+                     << "Please insert new member type or remain the current member type: (current member type: " << traveler[travelerIndex].getMemberType() << ")"
+                     << endl;
+                getline(cin, input);
+                traveler[travelerIndex].setMemberType(input);
+                break;
+
+            //update point
+            case POINT:
+                cout << endl
+                     << "Please insert new point or remain the current point: (current point: " << traveler[travelerIndex].getPoint() << ")"
+                     << endl;
+                cin >> numInput;
+                cin.ignore();
+                traveler[travelerIndex].setPoint(numInput);
+                break;
+
+            case REVIEW:
+                cout << endl
+                     << " Review Index  |  Review" << endl
+                     << "-------------------------------------------------------------------------------------------------------------" << endl;
+                for(int reviewIndex = 0; reviewIndex < revNo; reviewIndex++){
+                    if(review[reviewIndex].getUserID() == traveler[travelerIndex].getUserID()){
+                        cout << setw(8) << reviewIndex
+                             << " | "
+                             << review[reviewIndex].getReview()
+                             << endl;
+                    }
+                }
+                cout << "-------------------------------------------------------------------------------------------------------------" << endl;
+                
+                cout << "Please select the Review Index of the review you wish to amend: ";
+                cin >> numInput;
+                cin.ignore();
+
+                cout << "Please insert your new review:" << endl;
+                getline(cin, input);
+                review[numInput].setReview(input);
+                break;
+
+            case EXIT:
+                updateInfo = false;
+                break;
+
+            default:
+                cout << endl
+                     << "Invalid input..."
+                     << endl;
+        }
+    }
+}
+
 void SystemApp::addReview(int& revNo){
     bool repeat = true;
     string userID;
@@ -115,6 +334,7 @@ void SystemApp::addReview(int& revNo){
         for(int userIndex = 0; userIndex < TRAVELER_NUM; userIndex++){
             if(userID == traveler[userIndex].getUserID()){
                 repeat = false;
+                this->review[revNo].setUserID(userID);
             }
         }
         if(repeat){
@@ -132,6 +352,7 @@ void SystemApp::addReview(int& revNo){
          << "------------------------------------------------------" << endl;
 
     getline(cin, hotelName);
+    this->review[revNo].setHotelName(hotelName);
     
     do{
         cout << endl
@@ -146,159 +367,26 @@ void SystemApp::addReview(int& revNo){
             cout << endl
                  << "Please try again, rating must be between 1 and 5 (inclusive)" << endl
                  << endl;
+        }else{
+            this->review[revNo].setRating(rating);
         }
     }while(rating < 1 || rating > 5);
 
     cout << endl
          << "------------------------------------------------------" << endl
-         << " Insert your review for" << hotelName << endl
+         << " Insert your review for " << hotelName << endl
          << "------------------------------------------------------" << endl;
 
     getline(cin, review);
-
-    this->review[revNo].setReview(userID, rating, review, hotelName);
+    this->review[revNo].setReview(review);
+    
     revNo++;
 
-    cout << "<----------- New review successfully updated ----------->" << endl
-         << endl;
-}
-
-void SystemApp::hotelReview(){
-    string hotelName = "";
-    int revNo = 0;
-    
     cout << endl
-         << "Insert hotel name: (Input is case sensitive)"
+         << "<----------- New review successfully updated ----------->" << endl
          << endl;
-    
-    getline(cin, hotelName);
 
-    for(int reviewIndex = 0; reviewIndex < REVIEW_NUM; reviewIndex++){
-        if(reviewIndex == 0){
-            cout << endl
-                 << "=============================================================================================================" << endl
-                 << setw(8) << left << "User ID" << setw(8) << left << "Rating" << setw(30) << left << "Hotel" << "Review" << endl
-                 << "=============================================================================================================";
-        }
-        if(review[reviewIndex].getHotelName() == hotelName){
-            //print(placeholder)
-            revNo++;
-        }
-    }
-
-    if(revNo){
-        cout << endl
-             << "There are " << revNo << " number of reviews for " << hotelName << "."
-             << endl;
-    }else{
-        cout << endl
-             << "There are no reviews for this Hotel, make sure your input is correct..."
-             << endl;
-    }
-}
-
-void SystemApp::travelerManagement(){
-    string uid, input;
-    int newPoint;
-
-    travelerUpdateOpt options;
-    int temp;
-    int travelerIndex = 0;
-    bool updateInfo = false;
-
-    cout << endl
-         << "Enter user ID to configure the corresponding user information: "
-         << endl;
-    
-    getline(cin, uid);
-
-    //searching for the user based on uid
-    for(travelerIndex; travelerIndex < TRAVELER_NUM; travelerIndex++){
-        if(traveler[travelerIndex].getUserID() == uid){
-            updateInfo = true;
-            break;
-        }
-    }
-    if(!updateInfo){
-        cout << endl
-             << "UserID not found..."
-             << endl;
-    }
-
-    while(updateInfo){
-        cout << endl
-             << "============================0============================" << endl
-             << "              Traveler information update" << endl
-             << "============================0============================" << endl
-             << "  1. USER NAME" << endl
-             << "  2. STATE" << endl
-             << "  3. EMAIL" << endl
-             << "  4. MEMBER TYPE" << endl
-             << "  5. POINTS" << endl
-             << "  6. EXIT SUBPAGE" << endl
-             << "---------------------------------------------------------" << endl
-             << endl;
-
-        cin >> temp;
-
-        options = static_cast<travelerUpdateOpt>(--temp);
-
-        switch(options){
-            //update userName
-            case USER_NAME:
-                cout << endl
-                     << "Please insert new user name or remain the current user name: (current user name: " << traveler[travelerIndex].getUserName() << " )"
-                     << endl;
-
-                getline(cin, input);
-                break;
-
-            //update state
-            case STATE:
-                cout << endl
-                     << "Please insert new state or remain the current state: (current state: " << traveler[travelerIndex].getState() << " )"
-                     << endl;
-
-                getline(cin, input);
-                break;
-
-            //update email
-            case EMAIL:
-                cout << endl
-                     << "Please insert new email or remain the current email: (current email: " << traveler[travelerIndex].getEmail() << " )"
-                     << endl;
-
-                getline(cin, input);
-                break;
-
-            //update memberType
-            case MEMBER_TYPE:
-                cout << endl
-                     << "Please insert new member type or remain the current member type: (current member type: " << traveler[travelerIndex].getMemberType() << " )"
-                     << endl;
-
-                getline(cin, input);
-                break;
-
-            //update point
-            case POINT:
-                cout << endl
-                     << "Please insert new point or remain the current point: (current email: " << traveler[travelerIndex].getEmail() << " )"
-                     << endl;
-
-                getline(cin, input);
-                break;
-
-            case EXIT:
-                updateInfo = false;
-                break;
-
-            default:
-                cout << endl
-                     << "Invalid input..."
-                     << endl;
-        }
-    }
+    updateUserAveRating(revNo);
 }
 
 void SystemApp::sortHotel(const int& revNo, int& uniqueHotelNum){
@@ -310,10 +398,10 @@ void SystemApp::sortHotel(const int& revNo, int& uniqueHotelNum){
                 sameHotel = true;
                 break;
             }
-            if(!sameHotel){
-                uniqueHotel[uniqueHotelNum] = review[i];
-                uniqueHotelNum++;
-            }
+        }
+        if(!sameHotel){
+            uniqueHotel[uniqueHotelNum] = review[i];
+            uniqueHotelNum++;
         }
     }
 
@@ -321,20 +409,26 @@ void SystemApp::sortHotel(const int& revNo, int& uniqueHotelNum){
     for(int i = 0; i < uniqueHotelNum; i++){
         double rateSum = 0;
         int numHotel = 0;
-        for(int j = 0; i < revNo; j++){
+        for(int j = 0; j < revNo; j++){
             if(uniqueHotel[i].getHotelName() == review[j].getHotelName()){
                 rateSum += review[j].getRating();
                 numHotel++;
             }
         }
-        uniqueHotel[i].setAverageRating(rateSum/numHotel);
+        uniqueHotel[i].setNumReview(numHotel);
+
+        if(numHotel){
+            uniqueHotel[i].setAverageRating(rateSum/numHotel);
+        }else{
+            uniqueHotel[i].setAverageRating(0);
+        }
     }
 
     //  sort uniqueHotel ONLY based on average rating
     UniqueHotel temp;
     for(int i = 0; i < uniqueHotelNum; i++){
         for(int j = i + 1; j < uniqueHotelNum; j++){
-            if(uniqueHotel[i] > uniqueHotel[j]){
+            if(uniqueHotel[j] > uniqueHotel[i]){
                 temp = uniqueHotel[i];
                 uniqueHotel[i] = uniqueHotel[j];
                 uniqueHotel[j] = temp;
@@ -343,49 +437,63 @@ void SystemApp::sortHotel(const int& revNo, int& uniqueHotelNum){
     }
 }
 
-void SystemApp::topReviewers(const int& revNo){
+void SystemApp::topReviewers(){
     Traveler top1, top2, top3;
-    //finding user who gives the highest rating
-    for(int i = 1; i < TRAVELER_NUM; i++){
-        if(top1 == traveler[i] || top2 == traveler[i] || top3 == traveler[i]){
+    
+    //finding user who has the most reviews, then the highest average rating
+    for(int travelerIndex = 0; travelerIndex < TRAVELER_NUM; travelerIndex++){
+        if(top1 == traveler[travelerIndex] || top2 == traveler[travelerIndex] || top3 == traveler[travelerIndex]){
             continue;
         }
-        if(top1 < traveler[i]){
+        
+        if(top1 < traveler[travelerIndex]){
             top3 = top2;
             top2 = top1;
-            top1 = traveler[i];
+            top1 = traveler[travelerIndex];
 
-        }else if(top2 < traveler[i]){
+        }else if(top2 < traveler[travelerIndex]){
             top3 = top2;
-            top2 = traveler[i];
+            top2 = traveler[travelerIndex];
 
-        }else if(top3 < traveler[i]){
-            top3 = traveler[i];
+        }else if(top3 < traveler[travelerIndex]){
+            top3 = traveler[travelerIndex];
         }
     }
     cout << endl
          << "TOP 3 REVIEWER LEADERBOARD:" << endl
-         << "=========================================================" << endl
-         << setw(3) << left << " No " 
-         << setw(20) << left << " User Name"
-         << setw(10) << left << "User ID"
-         << "No. of Reviews " << endl
-         << "=========================================================" << endl;
-    cout << setw(3) << left << " 1" 
-         << setw(20) << left << top1.getUserName()
-         << setw(10) << left << top1.getUserID()
-         << top1.getReviewNumber()
+         << "=============================================================================================================" << endl
+         << setw(4) << left << " No" << " | "
+         << setw(15) << left << "User Name" << " | "
+         << setw(10) << left << "User ID" << " | "
+         << setw(20) << left << "Number of Reviews" << " | "
+         << "Average Rating" << endl
+         << "=============================================================================================================" << endl;
+         
+    cout << setw(4) << left << " 1" << " | " 
+         << setw(15) << left << top1.getUserName() << " | "
+         << setw(10) << left << top1.getUserID() << " | "
+         << setw(20) << left << top1.getReviewNumber() << " | "
+         << fixed << setprecision(2) 
+         << top1.getAverageRating()
          << endl;
-    cout << setw(3) << left << " 2" 
-         << setw(20) << left << top2.getUserName()
-         << setw(10) << left << top2.getUserID()
-         << top2.getReviewNumber()
+         
+    cout << setw(4) << left << " 2" << " | "
+         << setw(15) << left << top2.getUserName() << " | "
+         << setw(10) << left << top2.getUserID() << " | "
+         << setw(20) << left << top2.getReviewNumber() << " | "
+         << fixed << setprecision(2) 
+         << top2.getAverageRating()
          << endl;
-    cout << setw(3) << left << " 3" 
-         << setw(20) << left << top3.getUserName()
-         << setw(10) << left << top3.getUserID()
-         << top3.getReviewNumber()
+
+    cout << setw(4) << left << " 3" << " | "
+         << setw(15) << left << top3.getUserName() << " | "
+         << setw(10) << left << top3.getUserID() << " | "
+         << setw(20) << left << top3.getReviewNumber() << " | "
+         << fixed << setprecision(2) 
+         << top3.getAverageRating()
          << endl;
+    
+    cout << "=============================================================================================================" << endl;
 }
 
 //  constructors - SystemApp class
@@ -446,8 +554,10 @@ SystemApp::SystemApp(int& revNo){
             
             getline(revInFile, hotel, '\n');
 
-            review[revNo].setReview(uid, rate, rev,hotel);
-            
+            review[revNo].setUserID(uid);
+            review[revNo].setRating(rate);
+            review[revNo].setReview(rev);
+            review[revNo].setHotelName(hotel);
             revNo++;
 
             while(revInFile.peek() == '\n'){
@@ -457,22 +567,14 @@ SystemApp::SystemApp(int& revNo){
     
         userInFile.close();
         revInFile.close();
+
+        printTraveler();
+        printReview(revNo);
+
         cout << "<-------------text files successfully read-------------->" << endl
              << endl;
 
-        //set total number of reviews and average rating from each users
-        for(int i = 0; i < TRAVELER_NUM; i++){
-            int reviewNumber = 0;
-            double totalRating = 0;
-            for(int j = 0; j < revNo; j++){
-                if(traveler[i].getUserID() == review[j].getUserID()){
-                    reviewNumber++;
-                    totalRating += review[j].getRating();
-                }
-            }
-            traveler[i].setReviewNumber(reviewNumber);
-            traveler[i].setAverageRating(totalRating / reviewNumber);
-        }
+        updateUserAveRating(revNo);
     }
 }
 
@@ -481,14 +583,25 @@ void writeUserFile(Traveler[]);
 
 void writeReviewFile(Review[], int&);
 
+//  normal global function declaration
+void printMainMenu();
+
+void userSelection(SystemApp&, int&, int&);
 
 int main(){
     int reviewNumber = 0;
     int uniqueHotelNum = 0;
     SystemApp app(reviewNumber);
+    app.sortHotel(reviewNumber, uniqueHotelNum);        //initialise and sort unique hotel list
+
+    userSelection(app, reviewNumber, uniqueHotelNum);
 
     writeUserFile(app.getTraveler());
     writeReviewFile(app.getReview(), reviewNumber);
+
+    cout << "Please press ENTER to exit system...";
+    getchar();
+
     return 0;
 }
 
@@ -534,4 +647,81 @@ void writeReviewFile(Review rev[],  int& revNo){
     revOutFile.close();
     cout << "<----------- review.txt successfully updated ----------->" << endl
          << endl;
+}
+
+//  normal global function definition
+void printMainMenu(){
+    cout << endl
+         << "======================= MAIN MENU =======================" << endl
+         << "  1. SHOWING DATA" << endl
+         << "  2. SEARCH HOTEL REVIEW" << endl
+         << "  3. TRAVELER MANAGEMENT" << endl
+         << "  4. SUBMITTING NEW REVIEWS" << endl
+         << "  5. HOTEL RANKING" << endl
+         << "  6. TOP REVIEWERS" << endl
+         << "  7. EXIT AND UPDATE TEXT FILES" << endl
+         << "---------------------------------------------------------" << endl
+         << "Your Input: ";
+}
+
+void userSelection(SystemApp& app, int& revNo, int& unique){
+    UserOption option;
+    int input = 0;
+
+    while(option != EXIT_SYSTEM){
+        printMainMenu();
+        cin >> input; cin.ignore();
+
+        option = static_cast<UserOption>(--input);
+
+        switch(option){
+            case SHOW_DATA:
+                //print user and review file
+                app.printTraveler();
+                app.printReview(revNo);
+                cout << endl << endl << endl;
+                break;
+
+            case SEARCH:
+                app.hotelReview();
+                cout << endl << endl << endl;
+                break;
+
+            case TRAVELER_MANAGEMENT:
+                app.travelerManagement(revNo);
+                cout << endl << endl << endl;
+                break;
+
+            case ADD_REVIEWS:
+                app.addReview(revNo);
+                cout << endl << endl << endl;
+                break;
+
+            case HIGHEST_RATED_HOTEL:
+                //checking if a new hotel is added
+                app.sortHotel(revNo, unique);
+                //printing
+                app.printUniqueHotel(unique);
+                cout << endl << endl << endl;
+                break;
+
+            case TOP_REVIEWERS:
+                app.topReviewers();
+                cout << endl << endl << endl;
+                break;
+
+            case EXIT_SYSTEM:
+                cout << endl
+                     << "Thank you for using the Hotel Review System" << endl
+                     << endl;
+                break;
+
+            default:
+                cout << endl
+                     << "Input error, try again..."
+                     << endl;
+                cout << endl << endl << endl;
+        }
+
+    }
 }
