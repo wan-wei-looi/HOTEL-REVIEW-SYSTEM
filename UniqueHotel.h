@@ -23,15 +23,19 @@ public:
     int getNumReview()const{return numReview;}
     double getAverageRating()const{return averageRating;}
     
-    //class method
+    //class methods
 
-    static void assignUniqueHotels(const Review[], UniqueHotel[], const int&, int&);    //create a list of unique hotels
+    //  create a list of unique hotels by this  //
+    //  pointer to move along the array of      //
+    //  uniqueHotelNum of uniqueHotels          //
+    void assignUniqueHotels(const Review[], const int&, int&);
 
-    static void sortHotel(UniqueHotel[], const int&);                                   //sorting the hotel list based on average rating
+    //  sorting the hotel list based on average rating
+    static void sortHotel(UniqueHotel[], const int&);
     
     void printUniqueHotel(const int&)const;
 
-    //operator overloading
+    //  operator overloading
     UniqueHotel& operator=(const Review&);
     bool operator>(const UniqueHotel&)const;
 };

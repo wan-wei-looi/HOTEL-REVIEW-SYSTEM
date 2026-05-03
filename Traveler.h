@@ -38,24 +38,29 @@ public:
     int getReviewNumber()const{return reviewNumber;}
     double getAverageRating()const{return averageRating;}
     
-    //class method
+    //class methods
 
-    void readTravelerInfo(fstream&);                            //file reading
+    //  file reading
+    void readTravelerInfo(fstream&);
 
-    void assignTravelerReviewInfo(Review[], const int&);        //updates the review, number of reviews and average rating of traveler
+    //  updates the review, number of reviews   //
+    //  and average rating of traveler          //
+    void assignTravelerReviewInfo(Review[], const int&);
     
     static void searchReview(Traveler[], const int&);
     static void travelerManagement(Traveler[], const int&);
     static void topReviewers(Traveler[], const int&);
 
+    //  print
     void printTravelerInfo()const;
     void printTravelerReview()const;
 
-    //operator overloading
+    //  operator overloading
     bool operator==(const Traveler&)const;
     bool operator<(const Traveler&)const;
     
-    //friend function
+    //  friend function
+    friend void createUIDlist(Traveler[], const int&, string[]);
     friend void writeUserFile(Traveler[], const int&, fstream&);
 };
 

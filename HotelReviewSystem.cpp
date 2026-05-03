@@ -35,7 +35,6 @@ enum UserOption {
 
 
 //  operator overloading
-//  Traveler class
 bool Traveler::operator==(const Traveler& tra)const{
     return (this->userID == tra.userID);
 }
@@ -51,7 +50,6 @@ bool Traveler::operator<(const Traveler& tra)const{
     );
 }
 
-//  UniqueHotel class
 UniqueHotel& UniqueHotel::operator=(const Review& rev){
     this->userID = rev.getUserID();
     this->rating = rev.getRating();
@@ -66,7 +64,7 @@ bool UniqueHotel::operator>(const UniqueHotel& hotel)const{
 
 
 
-//  print function prototype
+//  global print function prototype
 void printMainMenu();
 
 void printTravelerHeader();
@@ -103,22 +101,26 @@ void Traveler::assignTravelerReviewInfo(Review rev[], const int& revNo){
 
 
 
-//  assigning number of reviews and average rating for each hotel
-void UniqueHotel::assignUniqueHotels( const Review rev[], UniqueHotel uniqueHotel[], const int& revNo, int& uniqueHotelNum){
+//  assigning number of reviews and average     //
+//  rating for each hotel start from the first  //
+//  hotel with index[0] to the hotel with       //
+//  index[uniqueHotelNum]                       //
+void UniqueHotel::assignUniqueHotels( const Review rev[], const int& revNo, int& uniqueHotelNum){
     
+    uniqueHotelNum = 0;
     // removing duplicates
     for(int reviewIndex = 0; reviewIndex < revNo; reviewIndex++){
         bool sameHotel = false;
 
-        for(int hotelIntex = 0; hotelIntex < uniqueHotelNum; hotelIntex++){
-            if(uniqueHotel[hotelIntex].hotelName == rev[reviewIndex].getHotelName()){
+        for(int hotelIndex = 0; hotelIndex < uniqueHotelNum; hotelIndex++){
+            if((this + hotelIndex)->hotelName == rev[reviewIndex].getHotelName()){
                 sameHotel = true;
                 break;
             }
         }
 
         if(!sameHotel){
-            uniqueHotel[uniqueHotelNum] = rev[reviewIndex];
+            *(this + uniqueHotelNum) = rev[reviewIndex];
             uniqueHotelNum++;
         }
     }
@@ -129,18 +131,18 @@ void UniqueHotel::assignUniqueHotels( const Review rev[], UniqueHotel uniqueHote
         int numHotel = 0;
 
         for(int reviewIndex = 0; reviewIndex < revNo; reviewIndex++){
-            if(uniqueHotel[hotelIndex].hotelName == rev[reviewIndex].getHotelName()){
+            if((this + hotelIndex)->hotelName == rev[reviewIndex].getHotelName()){
                 rateSum += rev[reviewIndex].getRating();
                 numHotel++;
             }
         }
 
-        uniqueHotel[hotelIndex].numReview = numHotel;
+        (this + hotelIndex)->numReview = numHotel;
 
         if(numHotel){
-            uniqueHotel[hotelIndex].averageRating = rateSum / numHotel;
+            (this + hotelIndex)->averageRating = rateSum / numHotel;
         }else{
-            uniqueHotel[hotelIndex].averageRating = 0;
+            (this + hotelIndex)->averageRating = 0;
         }
     }
 }
@@ -550,6 +552,8 @@ void Review::addReview(Review rev[], const string UID[], int& revNo){
 }
 
 //  friend global functions declaration
+void createUIDlist(Traveler[], const int&, string[]);
+
 void writeUserFile(Traveler[], const int&, fstream&);
 
 void writeReviewFile(Review[], const int&, fstream&);
@@ -612,14 +616,12 @@ int main(){
 
 
     UniqueHotel uniqueHotel[REVIEW_NUM];
-    //initialising a list of unique hotels
-    UniqueHotel::assignUniqueHotels(review, uniqueHotel, reviewNumber, uniqueHotelNum);
+    //initialising a list of unique hotels - must start with the first one, index[0]
+    uniqueHotel[0].assignUniqueHotels(review, reviewNumber, uniqueHotelNum);
 
     //  an array of user ID initialised
     string UID[TRAVELER_NUM];
-    for(int userIndex = 0; userIndex < userCount; userIndex++){
-        UID[userIndex] = traveler[userIndex].getUserID();
-    }
+    createUIDlist(traveler, userCount, UID);
 
     UserOption option = SHOW_DATA;
     while(option != EXIT_SYSTEM){
@@ -663,8 +665,8 @@ int main(){
                     traveler[travelerIndex].assignTravelerReviewInfo(review, reviewNumber);
                 }
 
-                // update number of reviews and average rating of each hotels
-                UniqueHotel::assignUniqueHotels(review, uniqueHotel, reviewNumber, uniqueHotelNum);
+                // update number of reviews and average rating of each hotels - must start with the first one, index[0]
+                uniqueHotel[0].assignUniqueHotels(review, reviewNumber, uniqueHotelNum);
 
                 break;
 
@@ -766,6 +768,12 @@ void printTableFooter(){
 
 
 //  friend global function definition
+void createUIDlist(Traveler tra[], const int& userCount, string UID[]){
+    for(int index = 0; index < userCount; index++){
+        UID[index] = tra[index].userID;
+    }
+}
+
 void writeUserFile(Traveler tra[], const int& userCount, fstream& userFile){
     cout << endl
          << "============= Rewriting data into users.txt ==============" << endl
