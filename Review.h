@@ -6,6 +6,9 @@
 
 using namespace std;
 
+//global constant - fixed maximum number of reviews a user can have
+const int REVIEW_NUM = 200;
+
 class Review{
 protected:
     string userID;
@@ -33,10 +36,10 @@ public:
     string getHotelName()const{return hotelName;}
 
     //class method
-    void readReviewList(fstream&);
 
-    static void searchReview(Review[]);
-    static void addReview(int&, const string[], Review[]);
+    void readReviewList(fstream&);                              //file reading
+
+    static void addReview(Review[], const string[], int&);      //adding new review
 
     void printReview()const;
 

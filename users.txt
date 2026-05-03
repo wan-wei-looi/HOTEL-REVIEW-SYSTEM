@@ -5,7 +5,7 @@ U004	Nur Aisyah	Sabah	aisyah.sabah@hotmail.com	Silver	3400
 U005	Daniel Lim	Sarawak	daniel.lim@mail.com	Silver	2900
 U006	Harith Iqmal	Kedah	harith.iqmal@ezmain.com	Silver	1500
 U007	Aina Husna	Perak	aina.husna@aol.com	Gold	7200
-U008	Farah Nadia	Negeri Sembilan	farah.nadia@yahoo.com	Platinum	10100
+U008	Jerry AnTom	Negeri Sembilan	farah.nadia@yahoo.com	Diamond	10100
 U009	Muhammad Iqbal	Melaka	iqbal.melaka@gmail.com	Silver	4100
 U010	Kavita Devi	Pahang	kavita.devi@hotmail.com	Silver	1200
-00
+

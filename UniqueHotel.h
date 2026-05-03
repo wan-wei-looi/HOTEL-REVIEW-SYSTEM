@@ -6,6 +6,7 @@
 #include "Review.h"
 
 using namespace std;
+
 class UniqueHotel : public Review{
 private:
     int numReview;
@@ -18,15 +19,15 @@ public:
     //destructor
     ~UniqueHotel(){}
 
-    
-    
     //getter
     int getNumReview()const{return numReview;}
     double getAverageRating()const{return averageRating;}
     
     //class method
-    static void assignUniqueHotels(const int&, int&, const Review[], UniqueHotel[]);
-    static void sortHotel(const int&, UniqueHotel[]);
+
+    static void assignUniqueHotels(const Review[], UniqueHotel[], const int&, int&);    //create a list of unique hotels
+
+    static void sortHotel(UniqueHotel[], const int&);                                   //sorting the hotel list based on average rating
     
     void printUniqueHotel(const int&)const;
 

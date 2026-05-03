@@ -31,3 +31,4 @@ U010	2	Old furniture and noisy environment	Hilltop Residence
 U008	5	green	greenLeafHotel
 U007	5	spacious, I love it	GreenLeaf Hotel
 U001	5	I love the ocean view	Seaview Resort
+U008	5	I love the beach there, and its so sunny	Bayfront Hotel

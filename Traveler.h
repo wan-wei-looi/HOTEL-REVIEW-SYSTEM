@@ -6,12 +6,20 @@
 #include "Person.h"
 #include "Review.h"
 
+using namespace std;
+
+//global constant - fixed number of traveler
+const int TRAVELER_NUM = 15;
+const int TRAVELER_REV_NUM = 10;
+
 class Traveler: public Person{
 private:
     string memberType;
     int point;
     int reviewNumber;
     double averageRating;
+
+    Review review[TRAVELER_REV_NUM];
 
 public:
     //constructor
@@ -31,15 +39,17 @@ public:
     double getAverageRating()const{return averageRating;}
     
     //class method
-    void readTravelerInfo(fstream&);
-    
-    void assignReviewNumber(const int&, const Review[]);
-    void assignAverageRating(const int&, const Review[]);
-    
-    static void travelerManagement(const int&, const int&, Traveler[], Review[]);
-    static void topReviewers(const int&, Traveler[]);
 
-    void printTraveler()const;
+    void readTravelerInfo(fstream&);                            //file reading
+
+    void assignTravelerReviewInfo(Review[], const int&);        //updates the review, number of reviews and average rating of traveler
+    
+    static void searchReview(Traveler[], const int&);
+    static void travelerManagement(Traveler[], const int&);
+    static void topReviewers(Traveler[], const int&);
+
+    void printTravelerInfo()const;
+    void printTravelerReview()const;
 
     //operator overloading
     bool operator==(const Traveler&)const;
