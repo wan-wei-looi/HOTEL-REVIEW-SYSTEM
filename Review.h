@@ -7,10 +7,10 @@
 using namespace std;
 
 //global constant - fixed maximum number of reviews a user can have
-const int REVIEW_NUM = 200;
+const int REVIEW_NUM = 50;
 
 class Review{
-protected:
+private:
     string userID;
     int rating;
     string review;
@@ -37,17 +37,8 @@ public:
 
     //class methods
 
-    //  file reading
-    void readReviewList(fstream&);
-
-    //  adding new review
-    static void addReview(Review[], const string[], int&);
-
     //  print
     void printReview()const;
-
-    //  friend function
-    friend void writeReviewFile(Review[], const int&, fstream&);
 };
 
 #endif

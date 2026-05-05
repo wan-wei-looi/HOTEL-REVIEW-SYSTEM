@@ -37,18 +37,18 @@ public:
     int getPoint()const{return point;}
     int getReviewNumber()const{return reviewNumber;}
     double getAverageRating()const{return averageRating;}
+
+    Review getReview(int reviewIndex)const{return review[reviewIndex];}
+    string getHotelName(int reviewIndex)const{return review[reviewIndex].getHotelName();}
     
     //class methods
 
     //  file reading
     void readTravelerInfo(fstream&);
+    void readReviewList(fstream&);
 
-    //  updates the review, number of reviews   //
-    //  and average rating of traveler          //
-    void assignTravelerReviewInfo(Review[], const int&);
-    
-    static void searchReview(Traveler[], const int&);
     static void travelerManagement(Traveler[], const int&);
+    static void addReview(Traveler[], const string[]);
     static void topReviewers(Traveler[], const int&);
 
     //  print
@@ -61,7 +61,9 @@ public:
     
     //  friend function
     friend void createUIDlist(Traveler[], const int&, string[]);
+
     friend void writeUserFile(Traveler[], const int&, fstream&);
+    friend void writeReviewFile(Traveler[], const int&, fstream&);
 };
 
 #endif
