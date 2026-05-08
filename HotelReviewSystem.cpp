@@ -56,15 +56,23 @@ int main(){
     }
 
     int userCount = 0;
+    int reviewNum = 0;
     int uniqueHotelNum = 0;
     
+    Review review[REVIEW_NUM];
+    while(!revFile.eof() && reviewNum < REVIEW_NUM){
+        review[reviewNum++].readReviewList(revFile);
+    }
+
     Traveler traveler[TRAVELER_NUM];
     while(!userFile.eof() && userCount < TRAVELER_NUM){
         traveler[userCount++].readTravelerInfo(userFile);
     }
-    for(int travelerIndex = 0; travelerIndex < userCount; travelerIndex++){
-        traveler[travelerIndex].readReviewList(revFile);
+    
+    for(int userIndex = 0; userIndex < userCount; userIndex++){
+        traveler[userIndex].assignTravelerReviews(review, reviewNum);
     }
+
 
     //  print out user and review for confirmation
     printTravelerHeader();

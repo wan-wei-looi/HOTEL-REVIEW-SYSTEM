@@ -45,7 +45,8 @@ public:
 
     //  file reading
     void readTravelerInfo(fstream&);
-    void readReviewList(fstream&);
+    
+    void assignTravelerReviews(Review[], const int&);
 
     static void travelerManagement(Traveler[], const int&);
     static void addReview(Traveler[], const string[]);

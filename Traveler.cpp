@@ -48,37 +48,12 @@ void Traveler::readTravelerInfo(fstream& userFile){
     }
 }
 
-void Traveler::readReviewList(fstream& revFile){
+void Traveler::assignTravelerReviews(Review rev[], const int& reviewNum){
     
-    revFile.clear();
-    revFile.seekg(0, ios::beg); //resets every time it is called
-    
-    string uidInput;
-    int ratingInput;
-    string reviewInput;
-    string hotelNameInput;
-
-
     //  assigning reviews based on uid
-    while(!revFile.eof() && reviewNumber < TRAVELER_REV_NUM){
-        getline(revFile, uidInput, '\t');
-        
-        revFile >> ratingInput;
-        revFile.ignore();
-        
-        getline(revFile, reviewInput, '\t');
-        
-        getline(revFile, hotelNameInput, '\n');
-        
-        if(uidInput == userID){
-            review[reviewNumber].setUserID(uidInput);
-            review[reviewNumber].setRating(ratingInput);
-            review[reviewNumber].setReview(reviewInput);
-            review[reviewNumber].setHotelName(hotelNameInput);
-            reviewNumber++;
-        }
-        while(revFile.peek() == '\n'){
-            revFile.ignore();
+    for(int reviewIndex = 0; reviewIndex < reviewNum; reviewIndex++){
+        if(rev[reviewIndex].getUserID() == userID){
+            review[reviewNumber++] = rev[reviewIndex];
         }
     }
 

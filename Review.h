@@ -36,6 +36,8 @@ public:
     string getHotelName()const{return hotelName;}
 
     //class methods
+    //  file reading
+    void readReviewList(fstream&);
 
     //  print
     void printReview()const;
