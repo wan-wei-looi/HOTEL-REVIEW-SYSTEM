@@ -61,7 +61,7 @@ public:
     bool operator<(const Traveler&)const;
     
     //  friend function
-    friend void createUIDlist(Traveler[], const int&, string[]);
+    friend void createUIDlist(const Traveler[], const int&, string[]);
 
     friend void writeUserFile(Traveler[], const int&, fstream&);
     friend void writeReviewFile(Traveler[], const int&, fstream&);

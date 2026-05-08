@@ -419,7 +419,7 @@ bool Traveler::operator<(const Traveler& tra)const{
 
 
 //  friend global function definition
-void createUIDlist(Traveler tra[], const int& userCount, string UID[]){
+void createUIDlist(const Traveler tra[], const int& userCount, string UID[]){
     for(int index = 0; index < userCount; index++){
         UID[index] = tra[index].userID;
     }

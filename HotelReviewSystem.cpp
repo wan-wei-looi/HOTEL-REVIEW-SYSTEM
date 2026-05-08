@@ -59,6 +59,7 @@ int main(){
     int reviewNum = 0;
     int uniqueHotelNum = 0;
     
+    //  temporary storage
     Review review[REVIEW_NUM];
     while(!revFile.eof() && reviewNum < REVIEW_NUM){
         review[reviewNum++].readReviewList(revFile);
@@ -72,21 +73,6 @@ int main(){
     for(int userIndex = 0; userIndex < userCount; userIndex++){
         traveler[userIndex].assignTravelerReviews(review, reviewNum);
     }
-
-
-    //  print out user and review for confirmation
-    printTravelerHeader();
-    for(int travelerIndex = 0; travelerIndex < userCount; travelerIndex++){
-        traveler[travelerIndex].printTravelerInfo();
-    }
-    printTableFooter();
-
-    printReviewHeader();
-    for(int travelerIndex = 0; travelerIndex < userCount; travelerIndex++){
-        traveler[travelerIndex].printTravelerReview();
-    }
-    printTableFooter();
-    
 
     cout << "<-------------text files successfully read-------------->" << endl
          << endl;
@@ -125,10 +111,11 @@ int main(){
                 break;
 
             case SEARCH:
+                uniqueHotel[0].assignUniqueHotels(traveler, userCount, uniqueHotelNum);
                 UniqueHotel::searchReview(uniqueHotel, uniqueHotelNum);
                 cout << endl << endl << endl;
                 break;
-
+            
             case TRAVELER_MANAGEMENT:
                 Traveler::travelerManagement(traveler, userCount);
                 cout << endl << endl << endl;
@@ -140,7 +127,6 @@ int main(){
                 break;
                 
             case HIGHEST_RATED_HOTEL:
-
                 // update number of reviews and average rating of each hotels - must start with the first one, index[0]
                 uniqueHotel[0].assignUniqueHotels(traveler, userCount, uniqueHotelNum);
                 UniqueHotel::sortHotel(uniqueHotel, uniqueHotelNum);
